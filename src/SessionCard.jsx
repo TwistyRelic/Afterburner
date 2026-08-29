@@ -1,6 +1,9 @@
 import { motion } from "framer-motion";
+import { coachReply } from "./coach.js";
 
 export default function SessionCard({ session, index }) {
+  const reply = coachReply(session);
+
   return (
     <motion.article
       className="session"
@@ -34,10 +37,18 @@ export default function SessionCard({ session, index }) {
           </div>
         </div>
       ) : null}
-      {session.coach ? (
+      {reply ? (
         <div className="coach">
           <span className="coach-label">Coach reply</span>
-          <p className="coach-text">{session.coach}</p>
+          <p className="coach-text">{reply.text}</p>
+          <dl className="coach-sources">
+            {reply.sources.map((source) => (
+              <div className="coach-source" key={source.label}>
+                <dt>{source.label}</dt>
+                <dd>{source.value}</dd>
+              </div>
+            ))}
+          </dl>
           <p className="markers">Suggested Healf markers: {session.markers}.</p>
         </div>
       ) : null}
