@@ -5,7 +5,7 @@ import { useRef, useState } from "react";
 const getRecognition = () =>
   window.SpeechRecognition ?? window.webkitSpeechRecognition ?? null;
 
-export default function Record({ onLog, onArm }) {
+export default function Record({ onLog, onArm, locked = false, onBlocked }) {
   const [listening, setListening] = useState(false);
   const [heard, setHeard] = useState("");
   const [typing, setTyping] = useState(false);
@@ -19,6 +19,10 @@ export default function Record({ onLog, onArm }) {
   };
 
   const start = () => {
+    if (locked) {
+      onBlocked?.();
+      return;
+    }
     onArm?.();
     const Recognition = getRecognition();
     if (!Recognition) {
@@ -57,6 +61,11 @@ export default function Record({ onLog, onArm }) {
     event.preventDefault();
     const note = text.trim();
     if (!note) return;
+    if (locked) {
+      onBlocked?.();
+      setText("");
+      return;
+    }
     onLog(note);
     setHeard(note);
     setText("");
@@ -72,9 +81,13 @@ export default function Record({ onLog, onArm }) {
       )}
 
       <button
-        className={listening ? "mic mic-live" : "mic"}
+        className={
+          locked ? "mic mic-locked" : listening ? "mic mic-live" : "mic"
+        }
         type="button"
-        aria-label={listening ? "Stop recording" : "Record"}
+        aria-label={
+          locked ? "Blocked while stationary" : listening ? "Stop recording" : "Record"
+        }
         aria-pressed={listening}
         onClick={listening ? stop : start}
       >

@@ -17,8 +17,17 @@ const effortColor = (effort) => {
   return easy.clone().lerp(hard, THREE.MathUtils.clamp((effort - 2) / 6, 0, 1));
 };
 
-export default function Ribbon() {
+// Desaturating the run is the whole point of the gate: standing still drains the
+// colour out of the evidence you are trying to talk over.
+const desaturate = (color) => {
+  const grey = color.getHSL({ h: 0, s: 0, l: 0 }).l * 0.75;
+  return new THREE.Color(grey, grey, grey);
+};
+
+export default function Ribbon({ locked = false }) {
   const mountRef = useRef(null);
+  const lockedRef = useRef(locked);
+  lockedRef.current = locked;
 
   useEffect(() => {
     const mount = mountRef.current;
@@ -66,7 +75,7 @@ export default function Ribbon() {
       outline.position.copy(segment.position);
       group.add(outline);
 
-      segments.push({ material, base, height });
+      segments.push({ material, base, grey: desaturate(base), height });
       disposables.push(geometry, material, outline.geometry, outline.material);
     });
 
@@ -85,12 +94,13 @@ export default function Ribbon() {
       const head = still
         ? run.splits.length - 1
         : (elapsed / ROLL_SECONDS) % (run.splits.length + 6);
+      const drained = lockedRef.current;
       segments.forEach((segment, index) => {
         const distance = Math.abs(head - index);
         const glow = Math.max(0, 1 - distance / 2.5);
         segment.material.color
-          .copy(segment.base)
-          .lerp(highlight, glow * (still ? 0 : 0.75));
+          .copy(drained ? segment.grey : segment.base)
+          .lerp(highlight, glow * (still || drained ? 0 : 0.75));
       });
       renderer.render(scene, camera);
       frame = requestAnimationFrame(animate);

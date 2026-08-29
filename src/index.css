@@ -283,7 +283,7 @@ button.ghost {
   height: 100dvh;
   overflow: hidden;
   display: grid;
-  grid-template-rows: auto minmax(0, 1fr) auto;
+  grid-template-rows: auto minmax(0, 1fr) auto auto;
   gap: 12px;
   /* The record control is fixed bottom-centre, so the grid reserves its height
      here rather than competing with the stage for it. */
@@ -324,6 +324,51 @@ button.ghost {
   font-size: 20px;
   line-height: 1.3;
   color: var(--body);
+}
+
+/* The movement gate. Standing still drains the run grey and turns this bar red:
+   you do not get to talk over evidence you are not currently producing. */
+.bar-moving,
+.bar-locked {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 4px 12px;
+  margin: 0;
+  font-size: 18px;
+  line-height: 1.3;
+}
+
+.bar-moving {
+  border-color: #2f9e63;
+  border-left-width: 6px;
+  background: rgba(47, 158, 99, 0.16);
+  color: var(--body);
+}
+
+.bar-locked {
+  border-color: #e0341f;
+  border-left-width: 6px;
+  background: rgba(224, 52, 31, 0.2);
+  color: var(--text);
+}
+
+.bar-counts {
+  margin-left: auto;
+  font-size: 14px;
+  font-variant-numeric: tabular-nums;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--muted);
+}
+
+.screen-locked .screen-stage {
+  filter: saturate(0.15);
+}
+
+.mic-locked {
+  background: #4a4f57;
+  animation: none;
 }
 
 .evidence {
