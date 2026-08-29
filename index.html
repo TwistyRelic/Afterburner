@@ -1,137 +1,553 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
   <head>
-    <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>Afterburner — Speak while you train</title>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta
+      name="description"
+      content="Afterburner turns your running voice notes into a protocol before you sit down."
+    />
+    <title>Afterburner — Speak While You Train</title>
     <style>
+      @import url("https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=Space+Grotesk:wght@400;500;600;700&display=swap");
+
       :root {
-        --bg: #0b0d10;
-        --panel: #14181d;
-        --line: #232a31;
-        --text: #eef2f6;
-        --muted: #8d9aa7;
-        --accent: #ff5c30;
+        --ink: #171717;
+        --muted: #6f6d67;
+        --paper: #f0eee8;
+        --card: #f9f8f4;
+        --acid: #d8fa54;
+        --orange: #fa6038;
+        --line: rgba(23, 23, 23, 0.14);
+        --mono: "DM Mono", monospace;
+        --sans: "Space Grotesk", sans-serif;
       }
+
       * {
         box-sizing: border-box;
       }
+
+      html {
+        scroll-behavior: smooth;
+      }
+
       body {
         margin: 0;
-        background: var(--bg);
-        color: var(--text);
-        font: 16px/1.55 -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica,
-          Arial, sans-serif;
+        color: var(--ink);
+        background: var(--paper);
+        font-family: var(--sans);
       }
-      main {
-        max-width: 720px;
+
+      a {
+        color: inherit;
+        text-decoration: none;
+      }
+
+      .shell {
+        width: min(1200px, calc(100% - 48px));
         margin: 0 auto;
-        padding: 72px 24px 96px;
       }
+
+      .topbar {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 24px 0;
+        border-bottom: 1px solid var(--line);
+      }
+
+      .wordmark,
+      .eyebrow,
+      .mono {
+        font-family: var(--mono);
+        text-transform: uppercase;
+        letter-spacing: 0.08em;
+      }
+
+      .wordmark {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        font-size: 0.82rem;
+        font-weight: 500;
+      }
+
+      .wordmark-mark {
+        width: 13px;
+        height: 13px;
+        background: var(--orange);
+        transform: rotate(45deg);
+      }
+
+      .topbar-link {
+        color: var(--muted);
+        font-family: var(--mono);
+        font-size: 0.67rem;
+        text-transform: uppercase;
+        letter-spacing: 0.08em;
+      }
+
+      .hero {
+        display: grid;
+        grid-template-columns: minmax(0, 1.35fr) minmax(260px, 0.65fr);
+        gap: 60px;
+        min-height: 590px;
+        padding: 94px 0 82px;
+        align-items: end;
+      }
+
+      .eyebrow {
+        color: var(--orange);
+        font-size: 0.68rem;
+        font-weight: 500;
+      }
+
+      h1,
+      h2,
+      p {
+        margin-top: 0;
+      }
+
       h1 {
+        max-width: 780px;
+        margin-bottom: 30px;
+        font-size: clamp(4.4rem, 10.5vw, 9.8rem);
+        font-weight: 600;
+        line-height: 0.82;
+        letter-spacing: -0.09em;
+      }
+
+      .hero-copy {
+        max-width: 340px;
+        margin: 0 0 5px auto;
+      }
+
+      .hero-copy h2 {
+        margin-bottom: 18px;
+        font-size: clamp(1.65rem, 3vw, 2.6rem);
+        line-height: 1;
+        letter-spacing: -0.055em;
+      }
+
+      .hero-copy p {
+        color: var(--muted);
+        font-size: 0.96rem;
+        line-height: 1.6;
+      }
+
+      .scroll-link {
+        display: inline-flex;
+        align-items: center;
+        gap: 10px;
+        margin-top: 28px;
+        font-family: var(--mono);
+        font-size: 0.65rem;
+        text-transform: uppercase;
+        letter-spacing: 0.08em;
+      }
+
+      .arrow {
+        display: grid;
+        width: 28px;
+        height: 28px;
+        border: 1px solid var(--ink);
+        border-radius: 50%;
+        place-items: center;
+        font-size: 1rem;
+      }
+
+      .protocol {
+        padding: 22px 0 106px;
+      }
+
+      .section-head {
+        display: flex;
+        justify-content: space-between;
+        gap: 24px;
+        padding-bottom: 16px;
+        border-bottom: 1px solid var(--line);
+      }
+
+      .section-head .mono {
+        color: var(--muted);
+        font-size: 0.65rem;
+      }
+
+      .protocol-grid {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 1px;
+        margin-top: 1px;
+        background: var(--line);
+        border-bottom: 1px solid var(--line);
+      }
+
+      .protocol-step {
+        min-height: 210px;
+        padding: 24px;
+        background: var(--paper);
+      }
+
+      .step-number {
+        display: block;
+        margin-bottom: 58px;
+        color: var(--orange);
+        font-family: var(--mono);
+        font-size: 0.7rem;
+      }
+
+      .protocol-step h3 {
+        margin: 0 0 10px;
+        font-size: 1.35rem;
+        letter-spacing: -0.04em;
+      }
+
+      .protocol-step p {
+        max-width: 240px;
+        margin-bottom: 0;
+        color: var(--muted);
+        font-size: 0.86rem;
+        line-height: 1.45;
+      }
+
+      .sessions {
+        padding: 30px 0 112px;
+      }
+
+      .sessions-intro {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 40px;
+        margin: 54px 0 38px;
+      }
+
+      .sessions-intro h2 {
+        max-width: 550px;
+        margin-bottom: 0;
+        font-size: clamp(2.6rem, 6vw, 5.8rem);
+        line-height: 0.88;
+        letter-spacing: -0.08em;
+      }
+
+      .sessions-intro p {
+        max-width: 290px;
         margin: 0;
-        font-size: 56px;
+        color: var(--muted);
+        font-size: 0.92rem;
+        line-height: 1.55;
+      }
+
+      .session-list {
+        display: grid;
+        gap: 10px;
+      }
+
+      .session {
+        display: grid;
+        grid-template-columns: 100px 180px 1fr 30px;
+        gap: 24px;
+        align-items: center;
+        padding: 22px 24px;
+        background: var(--card);
+        border: 1px solid var(--line);
+        transition: transform 180ms ease, background 180ms ease;
+      }
+
+      .session:hover {
+        background: var(--acid);
+        transform: translateX(6px);
+      }
+
+      .session-time {
+        font-family: var(--mono);
+        font-size: 0.8rem;
+      }
+
+      .runner-name {
+        font-size: 1rem;
+        font-weight: 600;
         letter-spacing: -0.03em;
       }
-      .subtitle {
-        margin: 8px 0 0;
-        font-size: 22px;
-        color: var(--accent);
-      }
-      .tagline {
-        margin: 4px 0 0;
-        font-size: 22px;
+
+      .session-note {
         color: var(--muted);
+        font-size: 0.92rem;
       }
-      h2 {
-        margin: 64px 0 16px;
-        font-size: 13px;
-        letter-spacing: 0.14em;
-        text-transform: uppercase;
+
+      .session-arrow {
+        font-size: 1.25rem;
+      }
+
+      .join {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 70px;
+        padding: 72px 0 90px;
+        border-top: 1px solid var(--line);
+      }
+
+      .join h2 {
+        max-width: 520px;
+        margin-bottom: 0;
+        font-size: clamp(2.8rem, 5.5vw, 5.5rem);
+        line-height: 0.88;
+        letter-spacing: -0.08em;
+      }
+
+      .join-form {
+        align-self: end;
+      }
+
+      .join-form p {
+        max-width: 320px;
         color: var(--muted);
+        font-size: 0.9rem;
+        line-height: 1.5;
       }
-      .session {
-        border: 1px solid var(--line);
-        background: var(--panel);
-        border-radius: 12px;
-        padding: 18px 20px;
-        margin-bottom: 12px;
-      }
-      .session-head {
+
+      .form-row {
         display: flex;
-        flex-wrap: wrap;
-        align-items: baseline;
-        gap: 12px;
+        border-bottom: 1px solid var(--ink);
       }
-      .name {
-        font-weight: 600;
+
+      input,
+      button {
+        border: 0;
+        font: inherit;
       }
-      .time {
+
+      input {
+        width: 100%;
+        padding: 16px 0;
+        color: var(--ink);
+        outline: 0;
+        background: transparent;
+      }
+
+      input::placeholder {
         color: var(--muted);
-        font-size: 14px;
       }
-      .number {
-        margin-left: auto;
-        font-variant-numeric: tabular-nums;
-        font-size: 20px;
-        color: var(--accent);
+
+      button {
+        padding: 0 0 0 20px;
+        color: var(--orange);
+        background: transparent;
+        cursor: pointer;
+        font-family: var(--mono);
+        font-size: 0.66rem;
+        text-transform: uppercase;
+        letter-spacing: 0.08em;
       }
-      .note {
-        margin: 10px 0 0;
-        color: var(--muted);
+
+      .sr-only {
+        position: absolute;
+        width: 1px;
+        height: 1px;
+        padding: 0;
+        margin: -1px;
+        overflow: hidden;
+        clip: rect(0, 0, 0, 0);
+        white-space: nowrap;
+        border: 0;
       }
+
       footer {
-        margin-top: 64px;
+        display: flex;
+        justify-content: space-between;
+        padding: 20px 0 28px;
+        border-top: 1px solid var(--line);
         color: var(--muted);
-        font-size: 14px;
+        font-family: var(--mono);
+        font-size: 0.62rem;
+        text-transform: uppercase;
+        letter-spacing: 0.07em;
+      }
+
+      @media (max-width: 700px) {
+        .shell {
+          width: min(100% - 32px, 1200px);
+        }
+
+        .topbar {
+          padding: 18px 0;
+        }
+
+        .hero {
+          display: block;
+          min-height: auto;
+          padding: 78px 0 88px;
+        }
+
+        h1 {
+          margin-bottom: 44px;
+          font-size: clamp(4.2rem, 22vw, 8rem);
+        }
+
+        .hero-copy {
+          margin: 0;
+        }
+
+        .protocol {
+          padding-bottom: 84px;
+        }
+
+        .protocol-grid,
+        .sessions-intro,
+        .join {
+          grid-template-columns: 1fr;
+        }
+
+        .protocol-step {
+          min-height: auto;
+        }
+
+        .step-number {
+          margin-bottom: 30px;
+        }
+
+        .sessions-intro {
+          gap: 24px;
+          margin: 38px 0 28px;
+        }
+
+        .session {
+          grid-template-columns: 1fr auto;
+          gap: 8px 16px;
+          padding: 18px;
+        }
+
+        .session-time {
+          grid-row: span 2;
+          align-self: start;
+        }
+
+        .session-note {
+          grid-column: 2;
+        }
+
+        .session-arrow {
+          display: none;
+        }
+
+        .join {
+          gap: 42px;
+          padding: 60px 0 72px;
+        }
+
+        footer {
+          gap: 18px;
+          flex-direction: column;
+        }
       }
     </style>
   </head>
   <body>
+    <header class="shell topbar">
+      <a class="wordmark" href="/" aria-label="Afterburner home">
+        <span class="wordmark-mark" aria-hidden="true"></span>
+        Afterburner
+      </a>
+      <a class="topbar-link" href="#sessions">Live protocols ↘</a>
+    </header>
+
     <main>
-      <h1>Afterburner</h1>
-      <p class="subtitle">Speak while you train</p>
-      <p class="tagline">Get a protocol before you sit down.</p>
-
-      <h2>Recent sessions</h2>
-
-      <article class="session">
-        <div class="session-head">
-          <span class="name">Adithya</span>
-          <span class="time">06:12 · 8.4 km</span>
-          <span class="number">172 bpm</span>
+      <section class="shell hero">
+        <div>
+          <span class="eyebrow">Voice training log / 001</span>
+          <h1>After<br />burner</h1>
         </div>
-        <p class="note">
-          "Legs heavy from yesterday, held pace anyway." Coach: cap tomorrow at
-          zone 2, 40 minutes. Markers to watch: CK, CRP.
-        </p>
-      </article>
-
-      <article class="session">
-        <div class="session-head">
-          <span class="name">Mira</span>
-          <span class="time">18:40 · 5 × 800 m</span>
-          <span class="number">3:02 avg</span>
+        <div class="hero-copy">
+          <h2>Speak while you train.</h2>
+          <p>
+            Get a protocol before you sit down. Turn the run into a record while
+            it’s still happening.
+          </p>
+          <a class="scroll-link" href="#protocol">
+            See the protocol <span class="arrow" aria-hidden="true">↓</span>
+          </a>
         </div>
-        <p class="note">
-          "Last rep felt easiest, breathing stayed low." Coach: add a sixth rep
-          next week, same rest. Marker to watch: ferritin.
-        </p>
-      </article>
+      </section>
 
-      <article class="session">
-        <div class="session-head">
-          <span class="name">Tom</span>
-          <span class="time">07:05 · 12 km easy</span>
-          <span class="number">64 min</span>
+      <section class="shell protocol" id="protocol">
+        <div class="section-head">
+          <span class="eyebrow">How it works</span>
+          <span class="mono">No screens required</span>
         </div>
-        <p class="note">
-          "Right calf tight from km 6, no sharp pain." Coach: swap Thursday for
-          bike, reassess Friday. Markers to watch: CK, CRP.
-        </p>
-      </article>
+        <div class="protocol-grid">
+          <article class="protocol-step">
+            <span class="step-number">01 / Talk</span>
+            <h3>Keep moving.</h3>
+            <p>Say what you notice: pace, effort, breath, the state of your legs.</p>
+          </article>
+          <article class="protocol-step">
+            <span class="step-number">02 / Capture</span>
+            <h3>Keep the signal.</h3>
+            <p>Afterburner turns the voice note into a clean training session.</p>
+          </article>
+          <article class="protocol-step">
+            <span class="step-number">03 / Recover</span>
+            <h3>Know what’s next.</h3>
+            <p>Get a short coach reply and a protocol ready for the next session.</p>
+          </article>
+        </div>
+      </section>
 
-      <footer>Built at RUN/HACK London — voice on the track, Devin on the repo.</footer>
+      <section class="shell sessions" id="sessions">
+        <div class="section-head">
+          <span class="eyebrow">Recent sessions</span>
+          <span class="mono">03 logged today</span>
+        </div>
+        <div class="sessions-intro">
+          <h2>Notes from<br />the road.</h2>
+          <p>Small observations become useful patterns when you keep them in motion.</p>
+        </div>
+        <div class="session-list" aria-label="Recent running sessions">
+          <article class="session">
+            <span class="session-time">06:42 AM</span>
+            <strong class="runner-name">Maya Chen</strong>
+            <span class="session-note">“Felt light through the first 5K. Hold the pace, don’t chase it.”</span>
+            <span class="session-arrow" aria-hidden="true">↗</span>
+          </article>
+          <article class="session">
+            <span class="session-time">07:18 AM</span>
+            <strong class="runner-name">Jon Bell</strong>
+            <span class="session-note">“Right calf is talking early. Swapped the hill repeats for easy volume.”</span>
+            <span class="session-arrow" aria-hidden="true">↗</span>
+          </article>
+          <article class="session">
+            <span class="session-time">08:03 AM</span>
+            <strong class="runner-name">Aisha Rahman</strong>
+            <span class="session-note">“Breathing stayed calm. Finished with enough left to want tomorrow.”</span>
+            <span class="session-arrow" aria-hidden="true">↗</span>
+          </article>
+        </div>
+      </section>
+
+      <section class="shell join" id="join">
+        <h2>Run first.<br />Reflect later.</h2>
+        <form class="join-form">
+          <p>Get the first protocol when Afterburner opens its doors.</p>
+          <div class="form-row">
+            <label class="sr-only" for="email">Email address</label>
+            <input id="email" type="email" placeholder="your@email.com" required />
+            <button type="submit">Join waitlist ↗</button>
+          </div>
+        </form>
+      </section>
     </main>
+
+    <footer class="shell">
+      <span>Afterburner / 2026</span>
+      <span>Built for the moving mind</span>
+    </footer>
+
+    <script>
+      document.querySelector(".join-form").addEventListener("submit", (event) => {
+        event.preventDefault();
+        const button = event.currentTarget.querySelector("button");
+        button.textContent = "You’re on the list ↗";
+        button.disabled = true;
+      });
+    </script>
   </body>
 </html>
