@@ -1,8 +1,10 @@
+import { useState } from "react";
 import Record from "../Record.jsx";
 import Ribbon from "../Ribbon.jsx";
 import { detectDecoupling } from "../decoupling.js";
 import { run } from "../run.js";
 import { useCadence } from "../useCadence.js";
+import { useMovement } from "../useMovement.js";
 
 const flags = detectDecoupling(run.splits);
 const collapse = flags.find((flag) => flag.kind === "form-collapse");
@@ -10,9 +12,17 @@ const flag = collapse ?? flags[0] ?? null;
 
 export default function Screen({ onLog }) {
   const { spm, live, request } = useCadence();
+  const { locked, watching, countdown } = useMovement();
+  const [accepted, setAccepted] = useState(0);
+  const [blocked, setBlocked] = useState(0);
+
+  const log = (text) => {
+    onLog(text);
+    setAccepted((count) => count + 1);
+  };
 
   return (
-    <div className="screen">
+    <div className={locked ? "screen screen-locked" : "screen"}>
       <div className="plate screen-top">
         <span className="plate-label">Afterburner · live</span>
         <span className="plate-value">
@@ -22,8 +32,27 @@ export default function Screen({ onLog }) {
       </div>
 
       <div className="screen-stage">
-        <Ribbon />
+        <Ribbon locked={locked} />
       </div>
+
+      {locked ? (
+        <p className="plate bar-locked" role="status">
+          <strong>Build locked</strong> — stationary for 15 s. Move to unlock.
+          <span className="bar-counts">
+            {accepted} accepted · {blocked} blocked
+          </span>
+        </p>
+      ) : (
+        <p className="plate bar-moving" role="status">
+          <strong>Moving</strong>
+          {watching
+            ? ` — locks after ${countdown} s still.`
+            : " — no position fix, gate off."}
+          <span className="bar-counts">
+            {accepted} accepted · {blocked} blocked
+          </span>
+        </p>
+      )}
 
       {flag ? (
         <p
@@ -50,7 +79,12 @@ export default function Screen({ onLog }) {
         </p>
       )}
 
-      <Record onLog={onLog} onArm={request} />
+      <Record
+        onLog={log}
+        onArm={request}
+        locked={locked}
+        onBlocked={() => setBlocked((count) => count + 1)}
+      />
     </div>
   );
 }
