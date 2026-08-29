@@ -34,6 +34,11 @@ const GAP_TWEEN = 0.3;
 const JUDGE_ZOOM = 0.44;
 const JUDGE_ROTATION_Y = -0.08;
 const JUDGE_SECONDS = 1.1;
+// Half the card's width, and the margin it keeps off the edge of the stage.
+const CARD_HALF = 116;
+const CARD_EDGE = 8;
+// Room the card needs above its anchor before it would ride over the top plate.
+const CARD_SPACE = 150;
 
 const flagsByKm = new Map(
   detectDecoupling(run.splits).map((flag) => [flag.km, flag]),
@@ -268,7 +273,18 @@ export default function Ribbon({ locked = false, judge = false, judgeKm }) {
         target.localToWorld(point);
         point.project(camera);
         const { clientWidth, clientHeight } = mount;
-        anchor.style.transform = `translate3d(${((point.x + 1) / 2) * clientWidth}px, ${((1 - point.y) / 2) * clientHeight}px, 0)`;
+        // Kilometres at either end of the run project close to the edge, so the
+        // anchor is held far enough in for the whole card to stay on screen.
+        const inset = Math.min(CARD_HALF + CARD_EDGE, clientWidth / 2);
+        const x = Math.min(
+          Math.max(((point.x + 1) / 2) * clientWidth, inset),
+          clientWidth - inset,
+        );
+        const y = Math.max(
+          ((1 - point.y) / 2) * clientHeight,
+          Math.min(CARD_SPACE, clientHeight),
+        );
+        anchor.style.transform = `translate3d(${x}px, ${y}px, 0)`;
       }
 
       // Both runners advance on one compressed clock, so the ghost pulling away
