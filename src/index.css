@@ -314,6 +314,15 @@ button.ghost {
   color: var(--text);
 }
 
+/* Form collapse reads differently from an ordinary slip: the pace went and the
+   cadence went with it while the runner said nothing had changed. */
+.evidence-collapse {
+  border-color: var(--accent);
+  border-left-width: 6px;
+  background: rgba(255, 92, 48, 0.14);
+  color: var(--text);
+}
+
 /* Voice is the primary input, so the record button is the most prominent
    control: 120px, round, fixed bottom-centre. Typing is the small fallback. */
 .record {
