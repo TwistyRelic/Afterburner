@@ -4,8 +4,7 @@
 export const sessions = [
   {
     name: "Adithya",
-    time: "06:12 · 8.4 km",
-    number: "172 bpm",
+    time: "06:12",
     note: '"Legs heavy from yesterday, held pace anyway."',
     gap: {
       said: "held 4:30 pace",
@@ -25,8 +24,7 @@ export const sessions = [
   },
   {
     name: "Mira",
-    time: "18:40 · 5 × 800 m",
-    number: "3:02 avg",
+    time: "18:40",
     note: '"Last rep felt easiest, breathing stayed low."',
     gap: {
       said: "last rep easiest",
@@ -43,8 +41,7 @@ export const sessions = [
   },
   {
     name: "Tom",
-    time: "07:05 · 12 km easy",
-    number: "64 min",
+    time: "07:05",
     note: '"Right calf tight from km 6, no sharp pain."',
     gap: {
       said: "easy run, no drop-off",
