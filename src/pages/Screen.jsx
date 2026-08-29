@@ -67,20 +67,38 @@ export default function Screen({ onLog }) {
               : "plate evidence"
           }
         >
-          <strong>Km {flag.km}</strong> — said {run.said}, ran {flag.paceSlip}
-          {" s/km slower"}
-          {flag.kind === "form-collapse" ? (
-            <>
-              {" with cadence −"}
-              {flag.cadenceDrop} spm. <strong>Form collapse.</strong>
-            </>
-          ) : (
-            "."
-          )}
+          <span className="evidence-words">
+            <strong>Km {flag.km}</strong> — said {run.said}, ran {flag.paceSlip}
+            {" s/km slower"}
+            {flag.kind === "form-collapse" ? (
+              <>
+                {" with cadence −"}
+                {flag.cadenceDrop} spm. <strong>Form collapse.</strong>
+              </>
+            ) : (
+              "."
+            )}
+          </span>
+          <span className="evidence-numbers">
+            <strong>Km {flag.km}</strong> · +{flag.paceSlip} s/km
+            {flag.kind === "form-collapse" ? (
+              <>
+                {" · −"}
+                {flag.cadenceDrop} spm · <strong>collapse</strong>
+              </>
+            ) : (
+              ""
+            )}
+          </span>
         </p>
       ) : (
         <p className="plate evidence">
-          {run.distance} at an even cadence — nothing came apart.
+          <span className="evidence-words">
+            {run.distance} at an even cadence — nothing came apart.
+          </span>
+          <span className="evidence-numbers">
+            {run.distance} · even cadence
+          </span>
         </p>
       )}
 
