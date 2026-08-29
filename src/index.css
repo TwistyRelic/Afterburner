@@ -146,6 +146,59 @@ h2 {
   color: var(--body);
 }
 
+.pitch p {
+  margin: 12px 0 0;
+  font-size: 17px;
+  line-height: 1.6;
+  color: var(--body);
+}
+
+.pitch p.pitch-lead {
+  margin: 0;
+  font-size: clamp(20px, 4vw, 26px);
+  font-weight: 600;
+  letter-spacing: -0.02em;
+  color: var(--text);
+}
+
+.gap {
+  margin: 16px 0 0;
+  border: 1px solid var(--line);
+  border-radius: 10px;
+  overflow: hidden;
+}
+
+.gap-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px 12px;
+  padding: 8px 12px;
+  border-bottom: 1px solid var(--line);
+  font-size: 15px;
+}
+
+.gap-row:last-child {
+  border-bottom: 0;
+}
+
+.gap-label {
+  flex: 0 0 80px;
+  font-size: 12px;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--muted);
+  align-self: center;
+}
+
+.gap-value {
+  color: var(--body);
+}
+
+.gap-delta {
+  color: var(--accent);
+  font-weight: 600;
+}
+
 .coach {
   margin: 14px 0 0;
   padding: 12px 14px;
