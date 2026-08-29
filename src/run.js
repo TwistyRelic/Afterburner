@@ -1,0 +1,50 @@
+// One seeded run from the track today, 31 km on the clock. `pace` is seconds per
+// km measured from the gaps between spoken markers; `cadence` is steps per
+// minute from the phone accelerometer; `effort` is what the runner reported out
+// loud on that kilometer, 1 (easy) to 10 (maximal). Km 6 is where he said
+// "easy, no drop-off" while the pace slipped and the cadence fell away.
+export const run = {
+  distance: "31.1 km",
+  markers: 7,
+  // The kilometres the runner spoke a marker at, in order. Commits are labelled
+  // with the most recent of these before them.
+  markerKms: [4, 6, 9, 14.2, 19, 24, 29],
+  dictatedAt: "km 14.2",
+  focusKm: 6,
+  said: "easy, no drop-off",
+  slower: "22 s",
+  cadenceDrop: "40 spm",
+  splits: [
+    { km: 1, pace: 268, cadence: 178, effort: 3 },
+    { km: 2, pace: 266, cadence: 178, effort: 3 },
+    { km: 3, pace: 270, cadence: 177, effort: 3 },
+    { km: 4, pace: 271, cadence: 177, effort: 3 },
+    { km: 5, pace: 274, cadence: 176, effort: 3 },
+    { km: 6, pace: 296, cadence: 162, effort: 3 },
+    { km: 7, pace: 301, cadence: 161, effort: 3 },
+    { km: 8, pace: 299, cadence: 160, effort: 4 },
+    { km: 9, pace: 302, cadence: 159, effort: 4 },
+    { km: 10, pace: 305, cadence: 158, effort: 4 },
+    { km: 11, pace: 303, cadence: 158, effort: 4 },
+    { km: 12, pace: 307, cadence: 157, effort: 4 },
+    { km: 13, pace: 310, cadence: 156, effort: 4 },
+    { km: 14, pace: 308, cadence: 156, effort: 4 },
+    { km: 15, pace: 312, cadence: 155, effort: 5 },
+    { km: 16, pace: 315, cadence: 154, effort: 5 },
+    { km: 17, pace: 313, cadence: 154, effort: 5 },
+    { km: 18, pace: 318, cadence: 153, effort: 5 },
+    { km: 19, pace: 321, cadence: 152, effort: 5 },
+    { km: 20, pace: 319, cadence: 152, effort: 5 },
+    { km: 21, pace: 324, cadence: 150, effort: 6 },
+    { km: 22, pace: 327, cadence: 149, effort: 6 },
+    { km: 23, pace: 330, cadence: 148, effort: 6 },
+    { km: 24, pace: 328, cadence: 148, effort: 6 },
+    { km: 25, pace: 334, cadence: 146, effort: 7 },
+    { km: 26, pace: 338, cadence: 145, effort: 7 },
+    { km: 27, pace: 341, cadence: 144, effort: 7 },
+    { km: 28, pace: 339, cadence: 143, effort: 7 },
+    { km: 29, pace: 346, cadence: 141, effort: 8 },
+    { km: 30, pace: 351, cadence: 140, effort: 8 },
+    { km: 31, pace: 357, cadence: 138, effort: 8 },
+  ],
+};
