@@ -707,3 +707,91 @@ button.ghost {
     font-size: 22px;
   }
 }
+
+/* The honesty dial: reported effort against measured pace, one number, filled
+   round a torus. The number sits on top of the canvas, never inside it. */
+.dial {
+  margin: 28px 0 0;
+  padding: 20px;
+  border: 1px solid var(--line);
+  border-radius: 16px;
+  background: rgba(17, 20, 24, 0.72);
+}
+
+.dial-head {
+  margin: 0;
+  font-size: 24px;
+  letter-spacing: -0.01em;
+}
+
+.dial-sub {
+  margin: 6px 0 0;
+  font-size: 18px;
+  line-height: 1.45;
+  color: var(--muted);
+}
+
+.dial-stage {
+  position: relative;
+  height: 280px;
+  margin: 12px 0 0;
+}
+
+.dial-stage canvas {
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+
+.dial-readout {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2px;
+  margin: 0;
+  transform: translate(-50%, -50%);
+  pointer-events: none;
+  text-align: center;
+}
+
+.dial-number {
+  font-size: 76px;
+  font-weight: 700;
+  line-height: 1;
+  font-variant-numeric: tabular-nums;
+  color: var(--text);
+}
+
+.dial-sources {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px 20px;
+  margin: 8px 0 0;
+}
+
+.dial-source dt {
+  font-size: 14px;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--muted);
+}
+
+.dial-source dd {
+  margin: 2px 0 0;
+  font-size: 18px;
+  font-variant-numeric: tabular-nums;
+  color: var(--body);
+}
+
+@media (max-width: 420px) {
+  .dial-stage {
+    height: 220px;
+  }
+
+  .dial-number {
+    font-size: 60px;
+  }
+}
