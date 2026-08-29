@@ -1,12 +1,15 @@
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 import gsap from "gsap";
 import Backdrop from "./Backdrop.jsx";
+import Gate from "./Gate.jsx";
 import SessionCard from "./SessionCard.jsx";
+import Slideshow from "./Slideshow.jsx";
 import Waitlist from "./Waitlist.jsx";
 import { sessions } from "./sessions.js";
 
 export default function App() {
   const heroRef = useRef(null);
+  const [user, setUser] = useState(null);
 
   useEffect(() => {
     const context = gsap.context(() => {
@@ -35,13 +38,33 @@ export default function App() {
           </p>
         </header>
 
-        <h2>Recent sessions</h2>
-        {sessions.map((session, index) => (
-          <SessionCard key={session.name} session={session} index={index} />
-        ))}
+        {user === null ? (
+          <Gate onEnter={setUser} />
+        ) : (
+          <>
+            <div className="signed-in">
+              <span>
+                {user.kind === "visitor"
+                  ? "Browsing as visitor"
+                  : `Signed in as ${user.name}`}
+              </span>
+              <button type="button" className="ghost" onClick={() => setUser(null)}>
+                {user.kind === "visitor" ? "Log in" : "Sign out"}
+              </button>
+            </div>
 
-        <h2>Waitlist</h2>
-        <Waitlist />
+            <h2>What it does</h2>
+            <Slideshow />
+
+            <h2>Recent sessions</h2>
+            {sessions.map((session, index) => (
+              <SessionCard key={session.name} session={session} index={index} />
+            ))}
+
+            <h2>Waitlist</h2>
+            <Waitlist />
+          </>
+        )}
 
         <footer>
           Built at RUN/HACK London — voice on the track, Devin on the repo.
