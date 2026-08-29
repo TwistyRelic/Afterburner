@@ -31,10 +31,7 @@ export default function App() {
       <Backdrop />
       <Strip />
       <Routes>
-        <Route
-          path="/"
-          element={<Landing user={user} logged={logged} onLog={logNote} />}
-        />
+        <Route path="/" element={<Landing logged={logged} onLog={logNote} />} />
         <Route path="/login" element={<Login onEnter={setUser} />} />
         <Route
           path="/sessions"
