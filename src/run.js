@@ -1,5 +1,7 @@
-// One seeded run from the track today. `pace` is seconds per km, `effort` is
-// what the runner reported out loud on that kilometer, 1 (easy) to 10 (maximal).
+// One seeded run from the track today, 31 km on the clock. `pace` is seconds per
+// km measured from the gaps between spoken markers; `effort` is what the runner
+// reported out loud on that kilometer, 1 (easy) to 10 (maximal). Km 6 is where
+// he said "easy, no drop-off" and ran 22 s slower.
 export const run = {
   distance: "31.1 km",
   markers: 7,
@@ -12,12 +14,33 @@ export const run = {
     { km: 1, pace: 268, effort: 3 },
     { km: 2, pace: 266, effort: 3 },
     { km: 3, pace: 270, effort: 3 },
-    { km: 4, pace: 271, effort: 4 },
-    { km: 5, pace: 274, effort: 4 },
-    { km: 6, pace: 296, effort: 4 },
-    { km: 7, pace: 301, effort: 4 },
-    { km: 8, pace: 305, effort: 5 },
-    { km: 9, pace: 308, effort: 5 },
-    { km: 10, pace: 312, effort: 5 },
+    { km: 4, pace: 271, effort: 3 },
+    { km: 5, pace: 274, effort: 3 },
+    { km: 6, pace: 296, effort: 3 },
+    { km: 7, pace: 301, effort: 3 },
+    { km: 8, pace: 299, effort: 4 },
+    { km: 9, pace: 302, effort: 4 },
+    { km: 10, pace: 305, effort: 4 },
+    { km: 11, pace: 303, effort: 4 },
+    { km: 12, pace: 307, effort: 4 },
+    { km: 13, pace: 310, effort: 4 },
+    { km: 14, pace: 308, effort: 4 },
+    { km: 15, pace: 312, effort: 5 },
+    { km: 16, pace: 315, effort: 5 },
+    { km: 17, pace: 313, effort: 5 },
+    { km: 18, pace: 318, effort: 5 },
+    { km: 19, pace: 321, effort: 5 },
+    { km: 20, pace: 319, effort: 5 },
+    { km: 21, pace: 324, effort: 6 },
+    { km: 22, pace: 327, effort: 6 },
+    { km: 23, pace: 330, effort: 6 },
+    { km: 24, pace: 328, effort: 6 },
+    { km: 25, pace: 334, effort: 7 },
+    { km: 26, pace: 338, effort: 7 },
+    { km: 27, pace: 341, effort: 7 },
+    { km: 28, pace: 339, effort: 7 },
+    { km: 29, pace: 346, effort: 8 },
+    { km: 30, pace: 351, effort: 8 },
+    { km: 31, pace: 357, effort: 8 },
   ],
 };
