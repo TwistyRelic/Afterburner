@@ -1091,3 +1091,18 @@ button.ghost {
   color: var(--muted);
   word-break: break-all;
 }
+
+/* Voice out: the reply reveals a word at a time while it is read aloud. */
+.coach-word {
+  display: inline-block;
+  will-change: opacity, transform;
+}
+
+.coach-spoken {
+  display: block;
+  margin-top: 6px;
+  font-size: 14px;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--muted);
+}
