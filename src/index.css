@@ -563,3 +563,88 @@ button.ghost {
   font-variant-numeric: tabular-nums;
   color: var(--muted);
 }
+
+/* Hovering a kilometre floats its numbers over the run on a blurred glass
+   plate. The layer never takes pointer events, so the canvas keeps the hover. */
+.km-anchor {
+  position: absolute;
+  top: 0;
+  left: 0;
+  z-index: 2;
+  pointer-events: none;
+  perspective: 900px;
+}
+
+.km-card {
+  position: absolute;
+  bottom: 12px;
+  left: 50%;
+  width: 232px;
+  margin-left: -116px;
+  padding: 12px 14px;
+  border: 1px solid rgba(238, 242, 246, 0.22);
+  border-radius: 14px;
+  background: rgba(20, 24, 29, 0.62);
+  backdrop-filter: blur(14px) saturate(1.4);
+  box-shadow: 0 18px 40px rgba(0, 0, 0, 0.45);
+  transform-style: preserve-3d;
+}
+
+.km-card-pinned {
+  border-color: rgba(255, 92, 48, 0.6);
+}
+
+.km-card-km {
+  display: block;
+  font-size: 22px;
+  font-weight: 600;
+  color: var(--text);
+}
+
+.km-card-rows {
+  display: grid;
+  gap: 4px;
+  margin: 8px 0 0;
+}
+
+.km-card-rows div {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 10px;
+}
+
+.km-card-rows dt {
+  font-size: 14px;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--muted);
+}
+
+.km-card-rows dd {
+  margin: 0;
+  font-size: 18px;
+  font-variant-numeric: tabular-nums;
+  color: var(--text);
+}
+
+.km-card-flag {
+  margin: 10px 0 0;
+  font-size: 14px;
+  line-height: 1.3;
+  color: var(--body);
+}
+
+.km-card-flag-collapse {
+  color: var(--accent);
+  font-weight: 600;
+}
+
+.km-card-flag-clear {
+  color: var(--muted);
+}
+
+.ribbon canvas {
+  position: relative;
+  z-index: 1;
+}
