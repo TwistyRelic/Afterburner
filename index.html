@@ -80,6 +80,29 @@
         margin: 10px 0 0;
         color: var(--muted);
       }
+      .coach {
+        margin: 14px 0 0;
+        padding: 12px 14px;
+        border-left: 3px solid var(--accent);
+        border-radius: 0 8px 8px 0;
+        background: #191d23;
+      }
+      .coach-label {
+        display: block;
+        font-size: 12px;
+        letter-spacing: 0.14em;
+        text-transform: uppercase;
+        color: var(--accent);
+        margin-bottom: 4px;
+      }
+      .coach-text {
+        margin: 0;
+      }
+      .markers {
+        margin: 8px 0 0;
+        font-size: 14px;
+        color: var(--muted);
+      }
       footer {
         margin-top: 64px;
         color: var(--muted);
@@ -126,9 +149,15 @@
           <span class="number">64 min</span>
         </div>
         <p class="note">
-          "Right calf tight from km 6, no sharp pain." Coach: swap Thursday for
-          bike, reassess Friday. Markers to watch: CK, CRP.
+          "Right calf tight from km 6, no sharp pain."
         </p>
+        <div class="coach">
+          <span class="coach-label">Coach reply</span>
+          <p class="coach-text">
+            Tight calf plus high weekly load — cut intensity tomorrow.
+          </p>
+          <p class="markers">Suggested Healf markers: CK, CRP, ferritin.</p>
+        </div>
       </article>
 
       <footer>Built at RUN/HACK London — voice on the track, Devin on the repo.</footer>
