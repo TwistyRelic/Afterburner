@@ -129,7 +129,7 @@ export default function Record({
         )}
       </button>
 
-      {judge ? null : typing ? (
+      {judge && !typing ? null : typing ? (
         <form className="record-typed" onSubmit={submitTyped}>
           <label className="sr-only" htmlFor="record-typed-input">
             Type the note instead

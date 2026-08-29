@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState } from "react";
 import gsap from "gsap";
 import * as THREE from "three";
+import FlatRun from "./FlatRun.jsx";
 import KmCard from "./KmCard.jsx";
 import { detectDecoupling } from "./decoupling.js";
 import {
@@ -72,6 +73,9 @@ export default function Ribbon({ locked = false, judge = false, judgeKm }) {
   // held it there and turned the camera onto it.
   const [active, setActive] = useState(null);
   const [pinned, setPinned] = useState(false);
+  // A phone with no working WebGL context still has to demo, so the run falls
+  // back to plain bars rather than taking the page down with it.
+  const [failed, setFailed] = useState(false);
   const activeRef = useRef(null);
   activeRef.current = active;
 
@@ -105,7 +109,13 @@ export default function Ribbon({ locked = false, judge = false, judgeKm }) {
     const scene = new THREE.Scene();
     const camera = new THREE.PerspectiveCamera(46, 1, 0.1, 200);
 
-    const renderer = new THREE.WebGLRenderer({ alpha: true, antialias: true });
+    let renderer;
+    try {
+      renderer = new THREE.WebGLRenderer({ alpha: true, antialias: true });
+    } catch {
+      setFailed(true);
+      return undefined;
+    }
     renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
     mount.appendChild(renderer.domElement);
 
@@ -456,6 +466,8 @@ export default function Ribbon({ locked = false, judge = false, judgeKm }) {
   }, []);
 
   const split = active === null ? null : run.splits[active];
+
+  if (failed) return <FlatRun locked={locked} flagsByKm={flagsByKm} />;
 
   return (
     <div className="ribbon" ref={mountRef}>

@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import Record from "../Record.jsx";
 import Ribbon from "../Ribbon.jsx";
 import { detectDecoupling } from "../decoupling.js";
@@ -6,19 +6,32 @@ import { run } from "../run.js";
 import { useCadence } from "../useCadence.js";
 import { useMovement } from "../useMovement.js";
 
-const flags = detectDecoupling(run.splits);
-const collapse = flags.find((flag) => flag.kind === "form-collapse");
-const flag = collapse ?? flags[0] ?? null;
-
-// The verdict is the one sentence worth saying out loud, built from the same
-// numbers the coach reads. It is the only text left standing in judge mode.
-const verdict = flag
-  ? `Km ${flag.km} · +${flag.paceSlip} s/km · −${flag.cadenceDrop} spm`
-  : `${run.distance} · even cadence`;
-const verdictSaid = flag ? `Said “${run.said}”` : "Nothing came apart";
+// With no cadence to read, the finding is the pace slip alone — a smaller claim
+// than form collapse, and still the gap between what was said and what was run.
+function read(cadence) {
+  const flags = detectDecoupling(run.splits, { cadence });
+  const collapse = flags.find((item) => item.kind === "form-collapse");
+  const flag = collapse ?? flags[0] ?? null;
+  // The verdict is the one line worth saying out loud, built from the same
+  // numbers the coach reads. It is the only text left standing in judge mode.
+  const verdict = !flag
+    ? `${run.distance} · steady`
+    : flag.cadenceDrop === null
+      ? `Km ${flag.km} · +${flag.paceSlip} s/km`
+      : `Km ${flag.km} · +${flag.paceSlip} s/km · −${flag.cadenceDrop} spm`;
+  return {
+    flag,
+    verdict,
+    verdictSaid: flag ? `Said “${run.said}”` : "Nothing came apart",
+  };
+}
 
 export default function Screen({ onLog }) {
-  const { spm, live, request } = useCadence();
+  const { spm, live, supported, request } = useCadence();
+  const { flag, verdict, verdictSaid } = useMemo(
+    () => read(supported),
+    [supported],
+  );
   const { locked, watching, countdown } = useMovement();
   const [accepted, setAccepted] = useState(0);
   const [blocked, setBlocked] = useState(0);
@@ -55,7 +68,7 @@ export default function Screen({ onLog }) {
         <span className="plate-label">Afterburner · live</span>
         <span className="plate-value">
           {run.distance} · {run.markers} markers spoken
-          {live ? ` · ${spm} spm` : ""}
+          {live ? ` · ${spm} spm` : supported ? "" : " · pace only"}
         </span>
         <button
           className="judge-enter"
