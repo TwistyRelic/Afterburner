@@ -7,7 +7,7 @@ import { motion } from "framer-motion";
 export const TABS = [
   { to: "/dashboard", label: "Home", glyph: "home" },
   { to: "/breath", label: "Breath", glyph: "wave" },
-  { to: "/run", label: "Run", glyph: "run" },
+  { to: "/ghost", label: "Run", glyph: "run" },
   { to: "/analysis", label: "Score", glyph: "log" },
   { to: "/account", label: "You", glyph: "you" },
 ];

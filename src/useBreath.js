@@ -86,6 +86,12 @@ export function useBreath() {
         const record = { ...measured, zone, at: new Date().toISOString() };
         setResult(record);
         setHistory((h) => [record, ...h].slice(0, 8));
+        // Persist so the You tab shows a real history rather than an empty list.
+        try {
+          const kept = JSON.parse(window.localStorage.getItem("afterburner.readings") || "[]");
+          kept.unshift(record);
+          window.localStorage.setItem("afterburner.readings", JSON.stringify(kept.slice(0, 40)));
+        } catch { /* storage full */ }
         setState("done");
         return;
       }

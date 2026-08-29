@@ -1,12 +1,23 @@
 export const REPO = "TwistyRelic/Afterburner";
 const ENDPOINT = `https://api.github.com/repos/${REPO}/commits?per_page=100`;
 
+const CACHE = "afterburner.commits";
+
 export async function fetchCommits() {
+  // The unauthenticated GitHub API allows 60 requests an hour. A demo that
+  // refetches on every mount burns that and prints a 403 on stage, so the
+  // first success is cached and reused for the rest of the day.
+  try {
+    const held = JSON.parse(window.localStorage.getItem(CACHE) || "null");
+    if (held && held.length) return held;
+  } catch { /* no cache */ }
+
   const response = await fetch(ENDPOINT, {
     headers: { Accept: "application/vnd.github+json" },
   });
   if (!response.ok) throw new Error(`GitHub API ${response.status}`);
   const payload = await response.json();
+  try { window.localStorage.setItem(CACHE, JSON.stringify(payload)); } catch { /* full */ }
 
   return payload.map((item) => ({
     sha: item.sha.slice(0, 7),

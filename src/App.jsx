@@ -1,4 +1,4 @@
-import { useCallback, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { Navigate, Route, Routes, useLocation } from "react-router-dom";
 import { AnimatePresence, motion } from "framer-motion";
 import Navbar from "./Navbar.jsx";
@@ -10,6 +10,8 @@ import Strip from "./Strip.jsx";
 import Analysis from "./pages/Analysis.jsx";
 import Breath from "./pages/Breath.jsx";
 import Features from "./pages/Features.jsx";
+import Goal from "./pages/Goal.jsx";
+import Ghost from "./pages/Ghost.jsx";
 import Home from "./pages/Home.jsx";
 import Login from "./pages/Login.jsx";
 import Pace from "./pages/Pace.jsx";
@@ -22,7 +24,7 @@ import { DUR, EASE, exitDuration, useReducedMotion } from "./motion.js";
 // and insets itself under the bar rather than scrolling. "site" lets a hero run
 // full bleed under the glass. "doc" is a reading page that starts below it.
 const SHELLS = {
-  "/": "app",
+  "/": "site",
   "/run": "app",
   // The ghost view is its own locked viewport and gives the bar its clearance
   // out of its own padding, so it does not want the doc shell's top offset.
@@ -32,10 +34,18 @@ const SHELLS = {
   "/pricing": "site",
   "/sessions": "doc",
   "/login": "doc",
+  // The goal screen is a form, so it scrolls like a document and hands the
+  // ghost its setup when the runner presses start.
+  "/goal": "doc",
   "/breath": "doc",
   "/analysis": "doc",
   "/dashboard": "doc",
   "/account": "doc",
+};
+
+const isSignedIn = () => {
+  try { return Boolean(JSON.parse(window.localStorage.getItem("afterburner.account") || "{}").name); }
+  catch { return false; }
 };
 
 export default function App() {
@@ -58,6 +68,9 @@ export default function App() {
       ...current,
     ]);
   }, []);
+
+  const [signed, setSigned] = useState(isSignedIn());
+  useEffect(() => { setSigned(isSignedIn()); }, [location.pathname]);
 
   const shell = SHELLS[location.pathname] || "site";
 
@@ -93,8 +106,10 @@ export default function App() {
                 handed the phone on, and "/run" is a stable deep link that stays
                 right if "/" is ever given to something else. Every link into
                 the run view uses "/run". */}
-            <Route path="/" element={<Screen onLog={logNote} />} />
+            <Route path="/" element={<Home />} />
             <Route path="/run" element={<Screen onLog={logNote} />} />
+            <Route path="/goal" element={<Goal />} />
+            <Route path="/ghost" element={<Ghost />} />
             <Route path="/pace" element={<Pace />} />
             <Route path="/home" element={<Home />} />
             <Route path="/features" element={<Features />} />
@@ -118,7 +133,7 @@ export default function App() {
         </motion.div>
       </AnimatePresence>
 
-      <TabBar />
+      {signed ? <TabBar /> : null}
     </>
   );
 }

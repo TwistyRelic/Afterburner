@@ -13,7 +13,7 @@ const CARDS = [
     tone: "#3AA0FF",
   },
   {
-    to: "/run",
+    to: "/goal",
     kicker: "Adaptive ghost",
     title: "Race a ghost that listens",
     body: "Set a goal. The ghost re-paces itself around your breathing instead of holding a number you cannot hold.",

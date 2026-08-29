@@ -1,531 +1,469 @@
-import { useCallback, useMemo, useRef, useState } from "react";
+// THE LANDING.
+//
+// Two rules shaped this page.
+//
+// 1. NOTHING AUTOPLAYS AND NOTHING IS GATED ON A REVEAL. Every section is
+//    painted at its settled state on first render. There is no whileInView, no
+//    scroll scrub and no interval driving a picture, because a section that has
+//    to animate in is a blank section in any browser that does not run the
+//    animation, and a scrub tied to scroll speed crawls in a slow demo.
+// 2. THE EXHIBITS ARE THE REAL CODE. The nine row log and the tap demo below
+//    both call createPlan, applyReading, adjust and projectedFinish from
+//    ghostPacing.js. Nothing on this page is a number somebody typed in to make
+//    a point, so the page cannot drift away from the product.
+
+import { useCallback, useMemo, useState } from "react";
 import { Link } from "react-router-dom";
-import Rotator from "../Rotator.jsx";
-import { run } from "../run.js";
+import { ZONES } from "../breath.js";
 import {
-  RULE,
-  effortHex,
-  heightsFor,
-  listKms,
-  paceLabel,
-  plural,
-  spanLabel,
-  summarise,
-} from "../summary.js";
-import { useReducedMotion } from "../motion.js";
+  BOUNDS,
+  ZONE_STEP,
+  adjust,
+  applyReading,
+  createPlan,
+  formatClock,
+  formatPace,
+  ghostDistanceAt,
+  projectedFinish,
+} from "../ghostPacing.js";
 
-const WAITLIST_KEY = "afterburner.waitlist";
-
-// Every number on this page is computed from the session in run.js at render.
-// Nothing here is typed in by hand, so the copy moves when the session does.
-const SAMPLE = summarise(run.splits);
-
-const FEATURES = [
-  {
-    id: "talk",
-    title: "One button, then talk",
-    body: "Press it once at the start and put the phone back in your pocket. Talking is the whole interface, so there is nothing to tap, swipe or read at threshold pace.",
-    benefit: "Nothing to operate while you are running.",
-    live: true,
-    state:
-      "In this build. Your browser does the listening, and where it cannot, a typed line takes over.",
-  },
-  {
-    id: "pace",
-    title: "Pace and effort on the same row",
-    body: "The split is the wall clock gap between two spoken markers. The effort is the number you called out loud on that kilometre. One column you control, one column you do not, side by side.",
-    benefit: "A number that does not negotiate, next to one that does.",
-    live: false,
-    state:
-      "Read off the session recorded on the track. Turning a spoken marker into a split while you run is planned.",
-  },
-  {
-    id: "rule",
-    title: "One rule, written down",
-    body: RULE + " That is the whole rule, and you are meant to be able to argue with it.",
-    benefit: "You can check the arithmetic yourself.",
-    live: true,
-    state: "In this build.",
-  },
-  {
-    id: "count",
-    title: "Times you lied",
-    body: "One count per run, taken from your own splits. It holds up whether the run was long, short, windy or slow, because it only ever compares you against what you said a few kilometres earlier.",
-    benefit: "One number you can carry between runs.",
-    live: true,
-    state: "In this build.",
-  },
-  {
-    id: "shape",
-    title: "The run as a shape",
-    body: "One block per kilometre. Height is seconds above your fastest, colour is the effort you called out, and a flagged kilometre is capped in white. The disagreements stand up before you read a single number.",
-    benefit: "You see the gap before you count it.",
-    live: true,
-    state: "In this build. Drag it to turn it, or tap a block to read it.",
-  },
-  {
-    id: "ghost",
-    title: "The ghost of kilometre one",
-    body: "Your first kilometre keeps running at its own pace for the rest of the session. It never gets tired and it is not a stranger, so the gap it opens is the fairest number in the app.",
-    benefit: "The cost of drifting, in seconds you can feel.",
-    live: true,
-    state: "In this build.",
-  },
-  {
-    id: "cadence",
-    title: "Cadence from your pocket",
-    body: "Steps per minute counted off the phone accelerometer, so a kilometre that slowed can be read against whether your legs slowed with it or your stride quietly shortened.",
-    benefit: "A second witness on the same kilometre.",
-    live: false,
-    state:
-      "The count runs live on the run screen. Writing a cadence onto each kilometre as you pass it is planned.",
-  },
+// THE WALKTHROUGH. A 10 km with a 50:00 goal, run easy, and a runner who tires
+// and then comes back. The zones are the script; every pace and every finish
+// time in the table is computed by the same functions the run screen calls.
+const SCRIPT = [
+  { at: 120, zone: 2 },
+  { at: 720, zone: 3 },
+  { at: 1020, zone: 4 },
+  { at: 1320, zone: 4 },
+  { at: 1620, zone: 4 },
+  { at: 1920, zone: 3 },
+  { at: 2220, zone: 2 },
+  { at: 2520, zone: 1 },
+  { at: 2820, zone: 1 },
 ];
+
+function buildLog() {
+  let plan = createPlan({ distanceKm: 10, goalSeconds: 3000, intent: "easy" });
+  const rows = [];
+  SCRIPT.forEach((beat) => {
+    plan = applyReading(plan, { zone: beat.zone, elapsedSeconds: beat.at });
+    // The walkthrough puts the runner on the ghost's own line, which is what
+    // makes it a walkthrough rather than a recording. It is labelled as one.
+    const done = ghostDistanceAt(plan.segments, beat.at);
+    const ahead = projectedFinish(10, done, beat.at, plan.targetPace);
+    rows.push({
+      at: beat.at,
+      zone: beat.zone,
+      pace: plan.targetPace,
+      finish: ahead ? ahead.finishSeconds : null,
+    });
+  });
+  return rows;
+}
+
+// The demo below stands the runner halfway through the same 10 km, which is
+// past the point where a comfortable reading has earned anything, so both
+// directions can actually be shown.
+const DEMO_ELAPSED = 1500;
+const DEMO_GOAL = 3000;
+const DEMO_DISTANCE = 10;
+const DEMO_OPENING = 300;
 
 const STEPS = [
   {
-    id: "one",
     n: "1",
-    title: "Press once, at the start",
-    body: "One control, sized for a thumb that is already moving. After that the phone can stay in your pocket for the whole run.",
+    t: "Read one sentence out loud",
+    b: "Twelve seconds, the same sentence every time, so two readings are comparable. That is the whole input. No strap, no watch, no mask.",
   },
   {
-    id: "two",
     n: "2",
-    title: "Call the kilometre and the effort",
-    body: "Say where you are and how hard it feels, out of ten. Two numbers is all it needs, and the clock does the rest.",
+    t: "It measures where you breathe",
+    b: "How long you speak between breaths, how much of the sample is silence, and how often you breathe. That gives a zone, one to five.",
   },
   {
-    id: "three",
     n: "3",
-    title: "Stop, and read the disagreements",
-    body: "The run comes back as blocks with the flagged kilometres capped, the rule that flagged them, and the count. What it means is yours to decide.",
+    t: "The ghost re-paces, and says the new finish",
+    b: "Above the band for today it eases and tells you what the finish becomes. Below it, with time gone by, it takes some back. Inside it, it holds.",
   },
 ];
 
-const QUESTIONS = [
+const BUILT = [
   {
-    q: "Is it really calling me a liar?",
-    a: "It counts kilometres where the effort you reported held or fell while your pace slipped past the threshold. That is arithmetic on your own splits. The word is deliberately blunt, because the polite version of this number is the one everybody ignores.",
+    t: "The talk test, from your own microphone",
+    b: "Raw loudness becomes phrases and breaths. The audio is read frame by frame and thrown away.",
+    s: "Working",
   },
   {
-    q: "What if I do not want to talk out loud on a run?",
-    a: "There is a typed fallback, and a note logged by typing is never presented as something you said. You lose the phrase, you keep the timing and the effort.",
+    t: "Five zones, and the guidance that follows",
+    b: "Full sentences at one end, a word and a breath at the other, with what to do about it.",
+    s: "Working",
   },
   {
-    q: "How accurate is the pace?",
-    a: "Exactly as accurate as your calling. Pace is measured from the wall clock gap between two markers, so a marker called ten seconds late pushes that kilometre slower and the next one faster. It is a measurement of when you spoke, and it does not pretend to be anything else.",
+    t: "The adaptive ghost",
+    b: "A goal time becomes an opening pace, then every reading moves it, inside caps it cannot exceed.",
+    s: "Working",
   },
   {
-    q: "Does it know why I slowed down?",
-    a: "No, and it never guesses. Wind, a hill, a crossing, a bad night, heavy legs. Afterburner measures the gap between what you said and what you did. It does not explain it, it does not diagnose anything, and it will not tell you what to do about your training or your health.",
+    t: "The honest finish time",
+    b: "What you finish in if you hold this pace, restated after every reading. It is a projection and it says so.",
+    s: "Working",
   },
   {
-    q: "Do I need a watch, a chest strap or an account?",
-    a: "No. A phone, your voice and a clock. There is no account in this build, so nothing is uploaded and nothing is shared.",
+    t: "It asks out loud, and answers out loud",
+    b: "The prompt and the verdict are spoken, so a reading needs no screen and no hands.",
+    s: "Working",
   },
   {
-    q: "Can I buy it?",
-    a: "No. Nothing here is purchasable, no payment is built into this app, and no card is taken anywhere. Any price named anywhere in it is planned, not live.",
+    t: "Distance from the phone, or from your thumb",
+    b: "Position fixes when there are any, a lap tap when there are not, and it says which one it used.",
+    s: "Working, never run outdoors",
+  },
+  {
+    t: "Nothing leaves the device",
+    b: "No account, no server, no upload. The setup and the readings are kept in this browser.",
+    s: "Working",
+  },
+  {
+    t: "History across a training block",
+    b: "Reading against reading, week against week, so a bad Tuesday can be seen for what it is.",
+    s: "Not built",
+  },
+];
+
+const FAQ = [
+  {
+    q: "Is this a lactate threshold test?",
+    a: "No. It is the talk test, which is a coaching method: how much you can say between breaths tracks how hard you are working. A lactate measurement needs a needle and a laboratory. We measure speech, and we call it speech.",
+  },
+  {
+    q: "Can it tell me something about my asthma?",
+    a: "No. It is not a medical device. It does not diagnose anything, it does not treat anything, and it does not replace a clinician. All it can tell you is that your phrases are shorter than they were, and it does not know why.",
+  },
+  {
+    q: "Has anyone built this before?",
+    a: "We have not found one, and we have not searched the prior art properly either, so treat that as a hypothesis rather than a claim. The talk test is old and well known. Driving a pacer with it, live, from a phone microphone, is the part we have not seen.",
+  },
+  {
+    q: "How much of the pacing is measured and how much is chosen?",
+    a: "The zone is measured. Everything that turns a zone into a number of seconds is a calibration choice, and every one of them is marked as an assumption in the source. One zone of error is currently worth " + Math.round(ZONE_STEP * 1000) / 10 + " per cent of your current pace, which is the first number that should be calibrated against a real runner.",
+  },
+  {
+    q: "How far can the ghost move?",
+    a: "At a five minute pace, one reading moves it by at most " + Math.round(BOUNDS.maxEase) + " seconds per kilometre slower or " + Math.round(BOUNDS.maxPush) + " faster, and across a whole run it stays between " + formatPace(BOUNDS.fastestGhost) + " and " + formatPace(BOUNDS.slowestGhost) + " per km against a five minute goal. It eases about three times more readily than it pushes, because easing wrongly costs you a slower run and pushing wrongly costs you the run.",
+  },
+  {
+    q: "What has actually been tested?",
+    a: "The pacing arithmetic, in a browser and on its own. The run screen, driven end to end. What has not happened: nobody has run outdoors with it, no human voice has driven the zone through a whole session, the position filters have never met real satellite drift, and it has not been tested on an iPhone.",
+  },
+  {
+    q: "Can it hear a lorry, or the person next to me?",
+    a: "Yes. It reads loudness, not words, so a bus pulling away can look like a phrase. That is a real limitation and it is why a reading is capped rather than obeyed: one sample moves the ghost a little, and it takes several to move it a long way.",
+  },
+  {
+    q: "What does it cost?",
+    a: "Nothing, and nothing here is purchasable. There is no payment integration and no server. The prices on the pricing page are what we would charge, labelled planned, and every button on that page joins a list rather than taking money.",
   },
 ];
 
 export default function Home() {
-  const [index, setIndex] = useState(0);
-  const [said, setSaid] = useState("");
-  const emailRef = useRef(null);
-  const waitlistRef = useRef(null);
-  const still = useReducedMotion();
+  const log = useMemo(() => buildLog(), []);
+  const early = log[1] || null;
+  const late = log[log.length - 1] || null;
 
-  const bars = useMemo(() => {
-    const heights = heightsFor(SAMPLE.rows);
-    const width = SAMPLE.rows.length ? 100 / SAMPLE.rows.length : 0;
-    return SAMPLE.rows.map((row, i) => ({
-      km: row.km,
-      x: i * width,
-      w: width * 0.74,
-      h: 6 + heights.norm[i] * 92,
-      fill: effortHex(row.effort),
-      flagged: SAMPLE.flagged.has(row.km),
-    }));
+  const [pace, setPace] = useState(DEMO_OPENING);
+  const [move, setMove] = useState(null);
+
+  const tap = useCallback(
+    (zoneId) => {
+      const next = adjust(pace, zoneId, "easy", DEMO_ELAPSED / DEMO_GOAL, {
+        openingPace: DEMO_OPENING,
+      });
+      setPace(next.pace);
+      setMove(next);
+    },
+    [pace],
+  );
+
+  const reset = useCallback(() => {
+    setPace(DEMO_OPENING);
+    setMove(null);
   }, []);
 
-  const goWaitlist = useCallback(() => {
-    const section = waitlistRef.current;
-    if (section) {
-      section.scrollIntoView({
-        behavior: still ? "auto" : "smooth",
-        block: "start",
-      });
-    }
-    const field = emailRef.current;
-    if (field) field.focus({ preventScroll: true });
-  }, [still]);
-
-  const submit = (event) => {
-    event.preventDefault();
-    const value = emailRef.current ? emailRef.current.value.trim() : "";
-    if (!value) {
-      setSaid("Put an address in first.");
-      return;
-    }
-    try {
-      window.localStorage.setItem(WAITLIST_KEY, value);
-      setSaid(
-        "Kept in this browser only. Nothing has been sent anywhere, and there is nothing on this site to buy yet.",
-      );
-    } catch {
-      setSaid(
-        "This browser refused to store it, so nothing was saved. There is nothing on this site to buy yet either.",
-      );
-    }
-  };
-
-  const front = FEATURES[index];
-  const worst = SAMPLE.collapse || SAMPLE.flags[0] || null;
+  const done = DEMO_ELAPSED / DEMO_OPENING;
+  const projection = projectedFinish(DEMO_DISTANCE, done, DEMO_ELAPSED, pace);
+  const demoFinish = projection ? projection.finishSeconds : DEMO_GOAL;
+  const demoDelta = demoFinish - DEMO_GOAL;
 
   return (
-    <main className="ab-page">
-      <header className="ab-hero">
-        <div className="ab-wrap">
-          <h1 className="ab-h1">Train hard, and know which weeks were real.</h1>
-          <p className="ab-lede">
-            You press one button and talk while you run, calling the kilometre
-            and the effort out loud. Afterburner times the gap between the
-            kilometre you called and the kilometre you ran, then counts the ones
-            where the two stopped agreeing.{" "}
-            <strong>The headline number is times you lied.</strong>
-          </p>
-          <p className="ab-lede">
-            A block you cannot trust is a block you cannot repeat. This is the
-            record that tells you which sixteen weeks to build on, before you
-            spend another sixteen.
-          </p>
-          <div className="ab-actions">
-            <Link className="ab-btn ab-btn-solid" to="/run">
-              Open the run view
-            </Link>
-            <button
-              className="ab-btn ab-btn-ghost"
-              type="button"
-              onClick={goWaitlist}
-            >
-              Join the waitlist
-            </button>
+    <main className="abhome">
+      <header className="abhome-hero">
+        <h1>Get to the finish, without blowing up at 8 km.</h1>
+        <p className="abhome-lede">
+          Every pacer runs the pace you asked for. Afterburner runs the pace you can
+          actually hold today. You read one sentence out loud, it measures where you
+          breathe, and the ghost you are chasing re-paces itself around the answer.
+        </p>
+
+        <div className="abhome-cta">
+          <Link className="abhome-go" to="/goal">
+            Set up a run
+          </Link>
+          <Link className="abhome-alt" to="/breath">
+            Try the talk test, twelve seconds
+          </Link>
+        </div>
+
+        {/* Both columns read their times off the same two rows of the worked
+            run below, so the hero cannot quote a minute the table does not
+            have. The left column is what a fixed pacer prints: the opening
+            pace, on every row, for ever. */}
+        <div className="abhome-versus">
+          <div className="abhome-side">
+            <div className="abhome-sideLabel">Any other pacer</div>
+            {early && late
+              ? [early, late].map((row) => (
+                  <div className="abhome-sideRow" key={"deaf-" + row.at}>
+                    <span className="abhome-sideWhen">
+                      At {formatClock(row.at)}
+                    </span>
+                    <span className="abhome-sideNum">
+                      {formatPace(DEMO_OPENING)}
+                    </span>
+                  </div>
+                ))
+              : null}
+            <p className="abhome-sideNote">
+              The same number, whatever is happening to you.
+            </p>
           </div>
-          <p className="ab-note">
-            Nothing here is purchasable. No payment is built into this app and
-            no card is taken anywhere in it.
-          </p>
+          <div className="abhome-side is-ours">
+            <div className="abhome-sideLabel">Afterburner</div>
+            {early && late
+              ? [early, late].map((row) => (
+                  <div className="abhome-sideRow" key={"ours-" + row.at}>
+                    <span className="abhome-sideWhen">
+                      At {formatClock(row.at)}
+                    </span>
+                    <span className="abhome-sideNum">{formatPace(row.pace)}</span>
+                  </div>
+                ))
+              : null}
+            <p className="abhome-sideNote">
+              Both figures are computed by the pacing code, in the table below.
+            </p>
+          </div>
         </div>
       </header>
 
-      <section className="ab-sec">
-        <div className="ab-wrap">
-          <h2 className="ab-h2">Your watch recorded half of it.</h2>
-          <p className="ab-p">
-            Your watch has the pace and it has the cadence, and it will draw you
-            both tonight. It never heard you say the kilometre felt easy. So the
-            one comparison that decides whether a block is working, what you
-            believed at the time against what you actually did, is the single
-            thing nothing on your wrist is holding.
-          </p>
-          <p className="ab-p">
-            The cost is quiet. The file you review in week eleven is a record of
-            the runs, not of your judgement. You can see that the pace drifted.
-            You cannot see that you called it easy the whole way down.{" "}
-            <strong>
-              The weeks are spent either way, and the part worth having back is
-              the part that was never written down.
-            </strong>
-          </p>
+      <section className="abhome-sec">
+        <h2>Every pacer is deaf.</h2>
+        <p className="abhome-body">
+          You set five minutes per kilometre and it holds five minutes per kilometre.
+          It holds it at 24 degrees. It holds it on four hours of sleep. It holds it
+          when your breathing is worse this week than last week, and it holds it while
+          you come apart at 8 km. So people chase a number that was never right for
+          today, and the run ends early.
+        </p>
+        <p className="abhome-body">
+          A coach does not do that. A coach listens to you talk and slows you down.
+          That is the whole idea here, and the talk test is how it gets measured.
+        </p>
 
-          {bars.length ? (
-            <figure className="ab-figure">
-              <svg
-                className="ab-chart"
-                viewBox="0 0 100 100"
-                preserveAspectRatio="none"
-                role="img"
-                aria-label={
-                  "The session recorded on the track, drawn as " +
-                  bars.length +
-                  " blocks, one for each kilometre, where taller means slower. " +
-                  (SAMPLE.count
-                    ? "Flagged: " + SAMPLE.flagList + "."
-                    : "No kilometre in it was flagged.")
-                }
+        <div className="abhome-log" role="table" aria-label="A worked 10 km, computed by the pacing code">
+          <div className="abhome-logHead" role="row">
+            <span role="columnheader">Time</span>
+            <span role="columnheader">Zone</span>
+            <span role="columnheader">Ghost</span>
+            <span role="columnheader">Finish</span>
+          </div>
+          {log.map((row) => {
+            const zone = ZONES.find((z) => z.id === row.zone) || ZONES[0];
+            return (
+              <div
+                className="abhome-logRow"
+                role="row"
+                key={row.at}
+                style={{ "--tone": zone.colour }}
               >
-                {bars.map((bar) => (
-                  <g key={bar.km}>
-                    <rect
-                      x={bar.x}
-                      y={100 - bar.h}
-                      width={bar.w}
-                      height={bar.h}
-                      fill={bar.fill}
-                      opacity={bar.flagged ? 1 : 0.78}
-                    />
-                    {bar.flagged ? (
-                      <rect
-                        x={bar.x}
-                        y={100 - bar.h}
-                        width={bar.w}
-                        height="3"
-                        fill="#EDF1F6"
-                      />
-                    ) : null}
-                  </g>
-                ))}
-              </svg>
-              <p className="ab-legend">
-                <span>
-                  <i
-                    className="ab-swatch"
-                    style={{ background: effortHex(3) }}
-                  />
-                  Called easy
+                <span className="abhome-logTime" role="cell">
+                  {formatClock(row.at)}
                 </span>
-                <span>
-                  <i
-                    className="ab-swatch"
-                    style={{ background: effortHex(8) }}
-                  />
-                  Called hard
+                <span className="abhome-logZone" role="cell">
+                  Z{row.zone}
                 </span>
-                <span>
-                  <i className="ab-swatch" style={{ background: "#EDF1F6" }} />
-                  Flagged
+                <span className="abhome-logPace" role="cell">
+                  {formatPace(row.pace)}
                 </span>
-              </p>
-              <figcaption className="ab-figcaption">
-                One block per kilometre. Height is seconds above the fastest
-                kilometre of that run, colour is the effort called out loud on
-                it. Fastest {paceLabel(SAMPLE.fastest)} per kilometre, slowest{" "}
-                {paceLabel(SAMPLE.slowest)}.
-                {worst ? (
-                  <>
-                    {" "}
-                    <strong>
-                      Kilometre {worst.km} is the shape of the problem:{" "}
-                      {worst.paceSlip} seconds a kilometre slower than the
-                      kilometres before it, still called {worst.effort} out of
-                      ten, with cadence down {worst.cadenceDrop} steps a minute.
-                    </strong>
-                  </>
-                ) : null}
-              </figcaption>
-            </figure>
-          ) : null}
-
-          <p className="ab-note">
-            Afterburner does not know why that kilometre slipped, and it does
-            not guess. It measures the gap between what you said and what you
-            did, hands it to you, and stops there. It is not a health check and
-            it gives no advice about your training.
-          </p>
+                <span className="abhome-logFinish" role="cell">
+                  {formatClock(row.finish)}
+                </span>
+              </div>
+            );
+          })}
         </div>
+        <p className="abhome-caption">
+          A 10 km with a 50:00 goal, run easy. A deaf pacer prints 5:00 and 50:00 on
+          every one of those rows, right up to the moment you stop. This table is a
+          scripted walkthrough of the arithmetic, not a recording of a run: the zones
+          are the script, and every pace and finish time is computed by the same
+          functions the run screen calls.
+        </p>
       </section>
 
-      <section className="ab-sec">
-        <div className="ab-wrap">
-          <h2 className="ab-h2">Counters, and where they come from</h2>
-          <p className="ab-p">
-            There are no testimonials on this page, no user count, no ratings
-            and no press logos, because this was built in a day and has nobody
-            to quote. What can honestly be shown is the session recorded on the
-            track, which ships inside the app so no screen is ever empty.
-          </p>
+      <section className="abhome-sec">
+        <h2>Move it yourself.</h2>
+        <p className="abhome-body">
+          You are halfway through that 10 km. Press a zone and watch the ghost. This
+          is the live pacing code, not a picture of it, and the same call the run
+          screen makes when it hears you.
+        </p>
 
-          <div className="ab-counters">
-            <div className="ab-counter">
-              <span className="ab-counter-value">{SAMPLE.kms}</span>
-              <span className="ab-counter-label">
-                Kilometres spoken in that session
-              </span>
-              <span className="ab-counter-sub">Sample</span>
+        <div className="abhome-demo">
+          <div className="abhome-demoTop">
+            <div className="abhome-demoCell">
+              <span className="abhome-demoLabel">Ghost pace</span>
+              <span className="abhome-demoBig">{formatPace(pace)}</span>
+              <span className="abhome-demoSmall">per kilometre</span>
             </div>
-            <div className="ab-counter">
-              <span className="ab-counter-value">{run.distance}</span>
-              <span className="ab-counter-label">
-                Distance on the clock for it
+            <div className="abhome-demoCell">
+              <span className="abhome-demoLabel">Finish, if you hold it</span>
+              <span className="abhome-demoBig">{formatClock(demoFinish)}</span>
+              <span className="abhome-demoSmall">
+                {Math.abs(demoDelta) < 30
+                  ? "on the 50:00 goal"
+                  : formatClock(Math.abs(demoDelta)) +
+                    (demoDelta > 0 ? " over" : " under") +
+                    " the 50:00 goal"}
               </span>
-              <span className="ab-counter-sub">Sample</span>
-            </div>
-            <div className="ab-counter">
-              <span className="ab-counter-value">{SAMPLE.count}</span>
-              <span className="ab-counter-label">
-                Kilometres the rule flagged in it
-              </span>
-              <span className="ab-counter-sub">Sample</span>
             </div>
           </div>
 
-          <p className="ab-source">
-            Built in one day at RUN/HACK London, on a 400 metre track, under the
-            rule of the day: you may only build while running, and every change
-            has to be dictated out loud. That session is one run. It is not a
-            study, and it is not data from anyone else.
+          <div className="abhome-demoZones" role="group" aria-label="Pick a talk test reading">
+            {ZONES.map((zone) => (
+              <button
+                key={zone.id}
+                type="button"
+                className="abhome-demoZone"
+                style={{ "--tone": zone.colour }}
+                onClick={() => tap(zone.id)}
+              >
+                <span className="abhome-demoZoneId">Z{zone.id}</span>
+                <span className="abhome-demoZoneName">{zone.short}</span>
+              </button>
+            ))}
+          </div>
+
+          <p className="abhome-demoSay" role="status" aria-live="polite">
+            {move
+              ? "Zone " +
+                move.zoneId +
+                ". " +
+                (move.direction === "ease"
+                  ? "The ghost eased " +
+                    Math.round(move.deltaSeconds) +
+                    " s/km to " +
+                    formatPace(move.pace) +
+                    " per km."
+                  : move.direction === "push"
+                    ? "You have room, so the ghost picked up " +
+                      Math.round(Math.abs(move.deltaSeconds)) +
+                      " s/km to " +
+                      formatPace(move.pace) +
+                      " per km."
+                    : "The ghost held " +
+                      formatPace(move.pace) +
+                      " per km. The reason: " +
+                      move.reason +
+                      ".") +
+                (move.capped ? " That was capped at one step." : "")
+              : "Nothing has been read yet, so the ghost is on the pace your goal implies."}
           </p>
+
+          <button type="button" className="abhome-demoReset" onClick={reset}>
+            Put it back to 5:00
+          </button>
         </div>
       </section>
 
-      <section className="ab-sec">
-        <div className="ab-wrap">
-          <h2 className="ab-h2">What it does</h2>
-          <p className="ab-p">
-            Seven parts, each with what it is for, and each carrying whether it
-            runs in this build or is still planned. Move it with the arrows, the
-            dots, the arrow keys or a drag.
-          </p>
+      <section className="abhome-sec">
+        <h2>Three steps.</h2>
+        <div className="abhome-steps">
+          {STEPS.map((step) => (
+            <div className="abhome-step" key={step.n}>
+              <span className="abhome-stepN" aria-hidden="true">
+                {step.n}
+              </span>
+              <h3>{step.t}</h3>
+              <p>{step.b}</p>
+            </div>
+          ))}
+        </div>
+      </section>
 
-          <Rotator
-            items={FEATURES}
-            index={index}
-            onIndex={setIndex}
-            label="What Afterburner does. Use the left and right arrow keys."
-            type="TIMES YOU LIED"
-            card={(item, isFront) => (
-              <article className={isFront ? "ab-card ab-card-front" : "ab-card"}>
-                <h3>{item.title}</h3>
-                <p className="ab-card-body">{item.body}</p>
-                <p className="ab-card-benefit">{item.benefit}</p>
-                <p
+      <section className="abhome-sec">
+        <h2>What is built, and what is not.</h2>
+        <p className="abhome-body">
+          No testimonials, no user count, no rating, no press, no logos, and no
+          sponsor. Nobody has been quoted on this page because nobody has used it yet.
+          Here is the whole list instead, with the honest state of each line.
+        </p>
+        <div className="abhome-built">
+          {BUILT.map((item) => (
+            <div className="abhome-builtRow" key={item.t}>
+              <div className="abhome-builtHead">
+                <h3>{item.t}</h3>
+                <span
                   className={
-                    item.live ? "ab-card-foot ab-card-foot-live" : "ab-card-foot"
+                    item.s === "Not built"
+                      ? "abhome-state is-off"
+                      : "abhome-state"
                   }
                 >
-                  {item.state}
-                </p>
-              </article>
-            )}
-          >
-            <div className="ab-pill-row">
-              {front.live ? (
-                <Link className="ab-btn ab-btn-solid" to="/run">
-                  See this on the run view
-                </Link>
-              ) : (
-                <button
-                  className="ab-btn ab-btn-solid"
-                  type="button"
-                  onClick={goWaitlist}
-                >
-                  Join the waitlist for this
-                </button>
-              )}
-              <p className="ab-pill-note">
-                {front.live
-                  ? "This part runs today, on the session that ships with the app."
-                  : "This part is not finished, so the button goes to the waitlist and nowhere else."}
-              </p>
+                  {item.s}
+                </span>
+              </div>
+              <p>{item.b}</p>
             </div>
-          </Rotator>
+          ))}
         </div>
       </section>
 
-      <section className="ab-sec">
-        <div className="ab-wrap ab-wrap-narrow">
-          <h2 className="ab-h2">Three steps</h2>
-          <ol className="ab-steps">
-            {STEPS.map((step) => (
-              <li className="ab-step" key={step.id}>
-                <span className="ab-kicker">STEP {step.n}</span>
-                <h3 className="ab-h3">{step.title}</h3>
-                <p className="ab-p">{step.body}</p>
-              </li>
-            ))}
-          </ol>
+      <section className="abhome-sec">
+        <h2>The awkward questions.</h2>
+        <div className="abhome-faq">
+          {FAQ.map((item) => (
+            <details className="abhome-q" key={item.q}>
+              <summary>{item.q}</summary>
+              <p>{item.a}</p>
+            </details>
+          ))}
         </div>
       </section>
 
-      <section className="ab-sec">
-        <div className="ab-wrap">
-          <h2 className="ab-h2">Objections, and the limits</h2>
-          <div className="ab-detail">
-            {QUESTIONS.map((item) => (
-              <details key={item.q}>
-                <summary>{item.q}</summary>
-                <p>{item.a}</p>
-              </details>
-            ))}
-          </div>
+      <section className="abhome-close">
+        <h2>Find out in twelve seconds.</h2>
+        <p className="abhome-body">
+          It runs on the phone in your hand. No account, no card, and nothing is
+          uploaded.
+        </p>
+        <div className="abhome-cta">
+          <Link className="abhome-go" to="/goal">
+            Set up a run
+          </Link>
+          <Link className="abhome-alt" to="/pricing">
+            See the planned prices
+          </Link>
         </div>
+        <p className="abhome-foot">
+          Built in a day at RUN/HACK London, under the rule that you may only build
+          while running and every change is dictated out loud. That is the reason the
+          whole interface is a voice and one enormous button: anything that needed two
+          hands did not survive the day. Afterburner is the talk test, which is a
+          coaching method. It is not a lactate measurement, it is not a VO2 test, it
+          does not diagnose or treat anything including asthma, and it does not replace
+          a clinician. Stop if you feel unwell.
+        </p>
       </section>
-
-      <section className="ab-sec" id="waitlist" ref={waitlistRef}>
-        <div className="ab-wrap ab-wrap-narrow">
-          <h2 className="ab-h2">Find out this week, not in week eleven.</h2>
-          <p className="ab-p">
-            The app is free to open right now and the recorded session is
-            already in it. The waitlist is for the parts marked planned above
-            and for nothing else. No card, no checkout, and no price attached to
-            this form.
-          </p>
-          <form className="ab-form" onSubmit={submit}>
-            <div className="ab-field">
-              <label className="ab-label" htmlFor="home-email">
-                Email
-              </label>
-              <input
-                className="ab-input"
-                id="home-email"
-                ref={emailRef}
-                type="email"
-                name="email"
-                autoComplete="email"
-                placeholder="you@example.com"
-              />
-            </div>
-            <button className="ab-btn ab-btn-solid" type="submit">
-              Put me on it
-            </button>
-          </form>
-          <p className="ab-said" role="status">
-            {said}
-          </p>
-        </div>
-      </section>
-
-      <footer className="ab-footer">
-        <div className="ab-wrap">
-          <ul className="ab-footer-links">
-            <li>
-              <Link to="/run">Run view</Link>
-            </li>
-            <li>
-              <Link to="/features">Features</Link>
-            </li>
-            <li>
-              <Link to="/pricing">Pricing</Link>
-            </li>
-            <li>
-              <Link to="/sessions">Sessions</Link>
-            </li>
-          </ul>
-          <p>
-            Afterburner. Built in one day at RUN/HACK London, on the track, with
-            every change dictated out loud while running.
-          </p>
-          <p>
-            {"Every number on this page is computed from that one session, " +
-              plural(SAMPLE.kms, "spoken kilometre", "spoken kilometres") +
-              ", " +
-              spanLabel(SAMPLE.behind) +
-              " behind the ghost of its own first kilometre by the finish" +
-              (SAMPLE.count
-                ? ", flagged at " + listKms(SAMPLE.flags.map((f) => f.km))
-                : "") +
-              "."}
-          </p>
-          <p>
-            Nothing on this site is purchasable, no payment is built and no card
-            is taken. Afterburner measures what you said against what you did.
-            It is not a medical device, it does not diagnose anything, and it
-            gives no advice about your training or your health.
-          </p>
-        </div>
-      </footer>
     </main>
   );
 }
