@@ -1,17 +1,18 @@
-import { motion } from "framer-motion";
-import { Link, NavLink, Outlet, useLocation } from "react-router-dom";
+import { Link, NavLink, Outlet } from "react-router-dom";
 
+// The public pages sit inside the same shell as the run views, so the tab bar is
+// present on every screen. This layout only adds the page-level nav above them.
 const LINKS = [
   { to: "/home", label: "Home" },
   { to: "/features", label: "Features" },
   { to: "/pricing", label: "Pricing" },
   { to: "/login", label: "Log in" },
+  { to: "/account", label: "You" },
 ];
 
 export default function Public() {
-  const { pathname } = useLocation();
   return (
-    <div className="app">
+    <div className="public">
       <header className="public-top">
         <Link className="wordmark" to="/home">
           Afterburner
@@ -30,15 +31,7 @@ export default function Public() {
           ))}
         </nav>
       </header>
-      <motion.main
-        className="app-body public-body"
-        key={pathname}
-        initial={{ opacity: 0, y: 8 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.24, ease: "easeOut" }}
-      >
-        <Outlet />
-      </motion.main>
+      <Outlet />
       <footer className="public-foot">
         <Link className="run-link" to="/">
           Open the run view

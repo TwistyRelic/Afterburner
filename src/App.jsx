@@ -1,4 +1,4 @@
-import { Route, Routes } from "react-router-dom";
+import { Navigate, Route, Routes } from "react-router-dom";
 import { RunProvider } from "./RunContext.jsx";
 import Shell from "./Shell.jsx";
 import Public from "./Public.jsx";
@@ -24,12 +24,13 @@ export default function App() {
           <Route path="/sessions" element={<Sessions />} />
           <Route path="/account" element={<Account />} />
           <Route path="/settings" element={<Settings />} />
-        </Route>
-        <Route element={<Public />}>
-          <Route path="/home" element={<Home />} />
-          <Route path="/features" element={<Features />} />
-          <Route path="/pricing" element={<Pricing />} />
-          <Route path="/login" element={<Login />} />
+          <Route element={<Public />}>
+            <Route path="/home" element={<Home />} />
+            <Route path="/features" element={<Features />} />
+            <Route path="/pricing" element={<Pricing />} />
+            <Route path="/login" element={<Login />} />
+          </Route>
+          <Route path="*" element={<Navigate replace to="/" />} />
         </Route>
       </Routes>
     </RunProvider>

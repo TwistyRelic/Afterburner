@@ -9,6 +9,10 @@
   --z3: #e2c53d;
   --z4: #ef8f3c;
   --z5: #ef4f4f;
+  /* The bar's own height, and the room every scrolling page leaves for it plus
+     the home indicator, so the last element on a page is always reachable. */
+  --tabs: 58px;
+  --tabs-clear: calc(var(--tabs) + env(safe-area-inset-bottom) + 20px);
   color-scheme: dark;
 }
 
@@ -45,7 +49,13 @@ body {
 
 .app-body {
   flex: 1 1 auto;
-  padding: 16px 16px 96px;
+  padding: 16px 16px var(--tabs-clear);
+}
+
+.public {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
 }
 
 .page {
@@ -624,35 +634,62 @@ a {
 .tabs {
   position: fixed;
   bottom: 0;
-  z-index: 2;
-  display: flex;
+  left: 50%;
+  z-index: 3;
   width: 100%;
   max-width: 480px;
-  border-top: 1px solid var(--line);
-  background: rgba(8, 9, 12, 0.94);
-  backdrop-filter: blur(8px);
+  transform: translateX(-50%);
+  border-top: 1px solid rgba(255, 255, 255, 0.09);
+  background: rgba(8, 9, 12, 0.72);
+  backdrop-filter: blur(14px) saturate(1.4);
+  -webkit-backdrop-filter: blur(14px) saturate(1.4);
   padding-bottom: env(safe-area-inset-bottom);
 }
 
+.tabs-row {
+  display: flex;
+  height: var(--tabs);
+  align-items: stretch;
+  padding: 6px 6px 0;
+  gap: 2px;
+}
+
 .tab {
+  position: relative;
+  display: flex;
   flex: 1 1 0;
-  padding: 12px 0 14px;
+  align-items: center;
+  justify-content: center;
+  padding: 0 2px 6px;
   color: var(--dim);
   font-size: 14px;
   text-align: center;
   text-decoration: none;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.tab-label {
+  position: relative;
+  z-index: 1;
+}
+
+.tab-pill {
+  position: absolute;
+  inset: 2px 4px 8px;
+  border-radius: 999px;
+  background: rgba(79, 208, 138, 0.16);
+  box-shadow: inset 0 0 0 1px rgba(79, 208, 138, 0.42);
 }
 
 .tab-on {
   color: var(--text);
-  box-shadow: inset 0 2px 0 var(--z1);
+  font-weight: 600;
 }
 
 .public-top {
   display: flex;
   flex-direction: column;
   gap: 8px;
-  padding: 14px 16px 0;
 }
 
 .wordmark {
@@ -678,15 +715,11 @@ a {
   color: var(--text);
 }
 
-.public-body {
-  padding-bottom: 24px;
-}
-
 .public-foot {
   display: flex;
   flex-direction: column;
   gap: 10px;
-  padding: 16px 16px 28px;
+  padding-top: 16px;
   border-top: 1px solid var(--line);
 }
 
