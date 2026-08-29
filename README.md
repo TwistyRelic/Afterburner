@@ -1,28 +1,25 @@
 # Afterburner
 
-Speak while you train. Get a protocol before you sit down.
+Afterburner catches you lying about your run.
 
 Built at RUN/HACK London — voice on the track, Devin on the repo.
 
 ## Pages
 
-- `/` — landing: title, what it does, waitlist
-- `/login` — log in or continue as visitor (client-side only, no backend)
+- `/` — the live view: the 3D run built from the spoken kilometre markers, one
+  evidence line, one mic. No navigation, no marketing copy.
 - `/sessions` — log a note and read the session cards
 
 ## What it is
 
-Session notes, coach replies, markers:
+You talk through the session as it happens — pace, effort, how the legs feel.
+The live view shows one segment per kilometre: height is seconds per kilometre,
+colour is the effort you reported. When the blocks grow while the colour stays
+cool, you said easy and ran slow — that gap is the product.
 
-- session notes spoken while running
-- a short coach reply
-- suggested Healf markers: CK, CRP, ferritin
-- waitlist
-
-You talk through the session as it happens — pace, effort, how the legs feel. By
-the time you stop moving, the page holds the notes, a short coach reply, and the
-markers worth testing (CK for muscle damage, CRP for inflammation, ferritin for
-iron), plus a waitlist form for anyone who wants in.
+The session log holds the notes, what the phone measured, a short coach reply,
+and the markers worth testing (CK for muscle damage, CRP for inflammation,
+ferritin for iron).
 
 ## How we build
 
@@ -33,8 +30,8 @@ iron), plus a waitlist form for anyone who wants in.
 
 ## Stack
 
-React + Vite with React Router, three.js for the animated backdrop, GSAP for the
-hero entrance, and Framer Motion for card and button interactions.
+React + Vite with React Router, three.js for the run itself, and Framer Motion
+for card interactions.
 
 ```
 npm install

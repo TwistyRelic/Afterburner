@@ -60,52 +60,6 @@ main {
   padding: 72px 24px 112px;
 }
 
-main.narrow {
-  max-width: 460px;
-}
-
-h1 {
-  margin: 0;
-  font-size: clamp(44px, 13vw, 88px);
-  line-height: 1.02;
-  letter-spacing: -0.04em;
-}
-
-.page-title {
-  font-size: clamp(36px, 10vw, 52px);
-}
-
-.hero {
-  padding-bottom: 8px;
-}
-
-.hero-actions {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 12px;
-  margin-top: 32px;
-}
-
-.subtitle {
-  margin: 16px 0 0;
-  font-size: clamp(20px, 4vw, 26px);
-  color: var(--accent);
-}
-
-.tagline {
-  margin: 6px 0 0;
-  font-size: clamp(18px, 3.4vw, 22px);
-  color: var(--body);
-}
-
-h2 {
-  margin: 64px 0 16px;
-  font-size: 13px;
-  letter-spacing: 0.14em;
-  text-transform: uppercase;
-  color: var(--muted);
-}
-
 .card,
 .session {
   border: 1px solid var(--line);
@@ -144,21 +98,6 @@ h2 {
   font-size: 17px;
   line-height: 1.6;
   color: var(--body);
-}
-
-.pitch p {
-  margin: 12px 0 0;
-  font-size: 17px;
-  line-height: 1.6;
-  color: var(--body);
-}
-
-.pitch p.pitch-lead {
-  margin: 0;
-  font-size: clamp(20px, 4vw, 26px);
-  font-weight: 600;
-  letter-spacing: -0.02em;
-  color: var(--text);
 }
 
 .gap {
@@ -235,78 +174,6 @@ h2 {
   white-space: nowrap;
 }
 
-.waitlist {
-  display: flex;
-  flex-direction: column;
-  gap: 12px;
-  margin: 16px 0 0;
-}
-
-.waitlist input {
-  padding: 14px 16px;
-  border: 1px solid var(--line);
-  border-radius: 10px;
-  background: var(--panel);
-  color: var(--text);
-  font: inherit;
-}
-
-.waitlist input::placeholder {
-  color: var(--muted);
-}
-
-.waitlist input:focus {
-  outline: 2px solid var(--accent);
-  outline-offset: 1px;
-}
-
-.waitlist-status {
-  margin: 12px 0 0;
-  min-height: 1.55em;
-  color: var(--muted);
-  font-size: 14px;
-}
-
-.gate-form {
-  margin-top: 24px;
-  display: flex;
-  flex-direction: column;
-  gap: 10px;
-}
-
-.gate-form label {
-  font-size: 13px;
-  letter-spacing: 0.08em;
-  text-transform: uppercase;
-  color: var(--muted);
-}
-
-.gate-form input {
-  padding: 14px 16px;
-  border: 1px solid var(--line);
-  border-radius: 10px;
-  background: var(--bg);
-  color: var(--text);
-  font: inherit;
-}
-
-.gate-form input::placeholder {
-  color: var(--muted);
-}
-
-.gate-error {
-  margin: 0;
-  min-height: 1.55em;
-  font-size: 14px;
-  color: var(--accent);
-}
-
-.gate-note {
-  margin: 16px 0 0;
-  font-size: 14px;
-  color: var(--muted);
-}
-
 .button,
 button.primary,
 button.ghost {
@@ -321,44 +188,16 @@ button.ghost {
   cursor: pointer;
 }
 
-.primary {
-  border-color: var(--accent);
-  background: var(--accent);
-  color: #14181d;
-}
-
 .ghost {
   border-color: var(--line);
   background: transparent;
   color: var(--text);
 }
 
-.block {
-  display: block;
-  width: 100%;
-}
-
-.big {
-  padding: 18px 24px;
-  font-size: 18px;
-}
-
 .small {
   padding: 6px 14px;
   font-size: 14px;
   font-weight: 400;
-}
-
-.login-alt {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 16px;
-}
-
-.quiet-link {
-  color: var(--muted);
-  font-size: 14px;
 }
 
 .signed-in {
@@ -406,79 +245,32 @@ button.ghost {
   color: var(--accent);
 }
 
-.slideshow {
-  border: 1px solid var(--line);
-  background: var(--panel);
-  border-radius: 14px;
-  padding: 24px;
-}
-
-.slide-stage {
-  min-height: 132px;
-}
-
-.slide h3 {
-  margin: 0 0 10px;
-  font-size: 26px;
-  letter-spacing: -0.02em;
-}
-
-.slide p {
-  margin: 0;
-  font-size: 17px;
-  line-height: 1.6;
-  color: var(--body);
-}
-
-.slide-dots {
-  display: flex;
-  gap: 8px;
-  margin-top: 16px;
-}
-
-.dot {
-  width: 8px;
-  height: 8px;
-  padding: 0;
-  border: 0;
-  border-radius: 50%;
-  background: var(--line);
-  cursor: pointer;
-}
-
-.dot-active {
-  background: var(--accent);
-}
-
-footer {
-  margin-top: 64px;
-  color: var(--muted);
-  font-size: 14px;
-}
-
 @media (prefers-reduced-motion: reduce) {
   .backdrop {
     display: none;
   }
 }
 
-/* /screen — one handed-over view, portrait first. One thing is enormous;
-   every label sits on its own plate, never bare on the 3D canvas. */
+/* The live view: one screen you hand over. The ribbon is the largest element
+   and takes every pixel the fixed rows leave, so nothing scrolls off. Labels
+   only ever sit on a plate, never bare on the 3D canvas. */
 .screen {
   position: relative;
-  min-height: 100vh;
-  min-height: 100dvh;
+  height: 100vh;
+  height: 100dvh;
+  overflow: hidden;
   display: grid;
-  grid-template-rows: auto 65vh auto auto;
-  align-content: start;
-  gap: 16px;
-  padding: 16px 16px 24px;
+  grid-template-rows: auto minmax(0, 1fr) auto;
+  gap: 12px;
+  /* The record control is fixed bottom-centre, so the grid reserves its height
+     here rather than competing with the stage for it. */
+  padding: 12px 12px 248px;
   background: var(--bg);
 }
 
 .screen-stage {
   position: relative;
-  height: 65vh;
+  min-height: 0;
 }
 
 .ribbon {
@@ -511,60 +303,115 @@ footer {
   color: var(--body);
 }
 
-.screen-hero {
-  position: absolute;
+.evidence {
+  margin: 0;
+  font-size: 20px;
+  line-height: 1.35;
+  color: var(--body);
+}
+
+.evidence strong {
+  color: var(--text);
+}
+
+/* Voice is the primary input, so the record button is the most prominent
+   control: 120px, round, fixed bottom-centre. Typing is the small fallback. */
+.record {
+  position: fixed;
   left: 0;
   right: 0;
-  top: 50%;
-  transform: translateY(-50%);
+  bottom: 20px;
+  display: flex;
+  flex-direction: column;
   align-items: center;
-  text-align: center;
-  gap: 2px;
+  gap: 12px;
+  padding: 0 12px;
 }
 
-.screen-huge {
-  font-size: clamp(96px, 34vw, 260px);
-  line-height: 0.9;
-  font-weight: 800;
-  letter-spacing: -0.05em;
-  color: var(--accent);
+.record-heard {
+  width: 100%;
+  max-width: 420px;
+  margin: 0;
 }
 
-.screen-said {
-  position: absolute;
-  left: 0;
-  bottom: 0;
-}
-
-.bar {
-  height: 22px;
-  margin: 4px 0;
-  border-radius: 999px;
+.record-heard .plate-value {
+  display: block;
   overflow: hidden;
-  background: #1c8a58;
-}
-
-.bar-fill {
-  height: 100%;
-  background: var(--accent);
+  white-space: nowrap;
+  text-overflow: ellipsis;
 }
 
 .mic {
-  justify-self: center;
+  order: -1;
+  display: grid;
+  place-items: center;
   width: 120px;
   height: 120px;
   border: 0;
   border-radius: 50%;
   background: var(--accent);
-  color: #0b0d10;
+  box-shadow: 0 0 0 0 rgba(255, 92, 48, 0.5);
   cursor: pointer;
 }
 
-.mic-inner {
-  font-size: 20px;
-  font-weight: 700;
-  letter-spacing: 0.08em;
-  text-transform: uppercase;
+.mic-dot {
+  width: 34px;
+  height: 34px;
+  border-radius: 50%;
+  background: #0b0d10;
+}
+
+.mic-live {
+  animation: mic-pulse 1.4s ease-out infinite;
+}
+
+.mic-live .mic-dot {
+  border-radius: 6px;
+}
+
+@keyframes mic-pulse {
+  to {
+    box-shadow: 0 0 0 28px rgba(255, 92, 48, 0);
+  }
+}
+
+.record-fallback {
+  border: 0;
+  padding: 4px 8px;
+  background: none;
+  font-size: 16px;
+  color: var(--muted);
+  text-decoration: underline;
+  cursor: pointer;
+}
+
+.record-typed {
+  display: flex;
+  gap: 8px;
+  width: 100%;
+  max-width: 420px;
+}
+
+.record-typed input {
+  flex: 1;
+  min-width: 0;
+  padding: 10px 12px;
+  border: 1px solid var(--line);
+  border-radius: 10px;
+  background: var(--panel);
+  font: inherit;
+  font-size: 18px;
+  color: var(--text);
+}
+
+.record-send {
+  border: 1px solid var(--line);
+  border-radius: 10px;
+  padding: 10px 16px;
+  background: var(--panel);
+  font-size: 18px;
+  color: var(--text);
+  cursor: pointer;
 }
 
 @media (orientation: landscape) and (min-width: 720px) {
