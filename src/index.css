@@ -3,6 +3,7 @@
   --panel: #14181d;
   --line: #232a31;
   --text: #eef2f6;
+  --body: #c3ccd6;
   --muted: #8d9aa7;
   --accent: #ff5c30;
 }
@@ -54,27 +55,47 @@ body {
 main {
   position: relative;
   z-index: 1;
-  max-width: 720px;
+  max-width: 760px;
   margin: 0 auto;
-  padding: 72px 24px 96px;
+  padding: 72px 24px 112px;
+}
+
+main.narrow {
+  max-width: 460px;
 }
 
 h1 {
   margin: 0;
-  font-size: clamp(36px, 12vw, 56px);
-  letter-spacing: -0.03em;
+  font-size: clamp(44px, 13vw, 88px);
+  line-height: 1.02;
+  letter-spacing: -0.04em;
+}
+
+.page-title {
+  font-size: clamp(36px, 10vw, 52px);
+}
+
+.hero {
+  padding-bottom: 8px;
+}
+
+.hero-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  margin-top: 32px;
 }
 
 .subtitle {
-  margin: 8px 0 0;
-  font-size: 22px;
+  margin: 16px 0 0;
+  font-size: clamp(20px, 4vw, 26px);
   color: var(--accent);
 }
 
 .tagline {
-  margin: 4px 0 0;
-  font-size: 22px;
-  color: var(--muted);
+  margin: 6px 0 0;
+  font-size: clamp(18px, 3.4vw, 22px);
+  color: var(--body);
 }
 
 h2 {
@@ -85,12 +106,14 @@ h2 {
   color: var(--muted);
 }
 
+.card,
 .session {
   border: 1px solid var(--line);
   background: var(--panel);
-  border-radius: 12px;
-  padding: 18px 20px;
-  margin-bottom: 12px;
+  border-radius: 14px;
+  padding: 24px;
+  margin-bottom: 16px;
+  box-shadow: 0 1px 0 rgb(255 255 255 / 3%) inset;
 }
 
 .session-head {
@@ -117,8 +140,10 @@ h2 {
 }
 
 .note {
-  margin: 10px 0 0;
-  color: var(--muted);
+  margin: 14px 0 0;
+  font-size: 17px;
+  line-height: 1.6;
+  color: var(--body);
 }
 
 .coach {
@@ -159,15 +184,13 @@ h2 {
 
 .waitlist {
   display: flex;
-  flex-wrap: wrap;
-  gap: 10px;
+  flex-direction: column;
+  gap: 12px;
   margin: 16px 0 0;
 }
 
 .waitlist input {
-  flex: 1 1 220px;
-  min-width: 0;
-  padding: 12px 14px;
+  padding: 14px 16px;
   border: 1px solid var(--line);
   border-radius: 10px;
   background: var(--panel);
@@ -184,17 +207,6 @@ h2 {
   outline-offset: 1px;
 }
 
-.waitlist button {
-  padding: 12px 20px;
-  border: 0;
-  border-radius: 10px;
-  background: var(--accent);
-  color: #14181d;
-  font: inherit;
-  font-weight: 600;
-  cursor: pointer;
-}
-
 .waitlist-status {
   margin: 12px 0 0;
   min-height: 1.55em;
@@ -202,33 +214,22 @@ h2 {
   font-size: 14px;
 }
 
-.gate {
-  margin-top: 56px;
-  border: 1px solid var(--line);
-  background: var(--panel);
-  border-radius: 12px;
-  padding: 24px;
-}
-
-.gate h2 {
-  margin: 0 0 16px;
-  font-size: 13px;
-}
-
-.gate-actions {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 10px;
-}
-
 .gate-form {
+  margin-top: 24px;
   display: flex;
   flex-direction: column;
   gap: 10px;
 }
 
+.gate-form label {
+  font-size: 13px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--muted);
+}
+
 .gate-form input {
-  padding: 12px 14px;
+  padding: 14px 16px;
   border: 1px solid var(--line);
   border-radius: 10px;
   background: var(--bg);
@@ -253,25 +254,58 @@ h2 {
   color: var(--muted);
 }
 
-button.primary {
-  padding: 12px 20px;
-  border: 0;
-  border-radius: 10px;
-  background: var(--accent);
-  color: #14181d;
+.button,
+button.primary,
+button.ghost {
+  display: inline-block;
+  padding: 14px 22px;
+  border: 1px solid transparent;
+  border-radius: 12px;
   font: inherit;
   font-weight: 600;
+  text-align: center;
+  text-decoration: none;
   cursor: pointer;
 }
 
-button.ghost {
-  padding: 12px 20px;
-  border: 1px solid var(--line);
-  border-radius: 10px;
+.primary {
+  border-color: var(--accent);
+  background: var(--accent);
+  color: #14181d;
+}
+
+.ghost {
+  border-color: var(--line);
   background: transparent;
   color: var(--text);
-  font: inherit;
-  cursor: pointer;
+}
+
+.block {
+  display: block;
+  width: 100%;
+}
+
+.big {
+  padding: 18px 24px;
+  font-size: 18px;
+}
+
+.small {
+  padding: 6px 14px;
+  font-size: 14px;
+  font-weight: 400;
+}
+
+.login-alt {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 16px;
+}
+
+.quiet-link {
+  color: var(--muted);
+  font-size: 14px;
 }
 
 .signed-in {
@@ -279,14 +313,9 @@ button.ghost {
   flex-wrap: wrap;
   align-items: center;
   gap: 12px;
-  margin-top: 40px;
+  margin: 40px 0 24px;
   font-size: 14px;
   color: var(--muted);
-}
-
-.signed-in button.ghost {
-  padding: 6px 12px;
-  font-size: 14px;
 }
 
 .log-note {
@@ -327,23 +356,25 @@ button.ghost {
 .slideshow {
   border: 1px solid var(--line);
   background: var(--panel);
-  border-radius: 12px;
-  padding: 20px;
+  border-radius: 14px;
+  padding: 24px;
 }
 
 .slide-stage {
-  min-height: 118px;
+  min-height: 132px;
 }
 
 .slide h3 {
-  margin: 0 0 8px;
-  font-size: 22px;
-  letter-spacing: -0.01em;
+  margin: 0 0 10px;
+  font-size: 26px;
+  letter-spacing: -0.02em;
 }
 
 .slide p {
   margin: 0;
-  color: var(--muted);
+  font-size: 17px;
+  line-height: 1.6;
+  color: var(--body);
 }
 
 .slide-dots {

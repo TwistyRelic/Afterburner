@@ -4,9 +4,15 @@ Speak while you train. Get a protocol before you sit down.
 
 Built at RUN/HACK London — voice on the track, Devin on the repo.
 
+## Pages
+
+- `/` — landing: title, what it does, waitlist
+- `/login` — log in or continue as visitor (client-side only, no backend)
+- `/sessions` — log a note and read the session cards
+
 ## What it is
 
-A single page:
+Session notes, coach replies, markers:
 
 - session notes spoken while running
 - a short coach reply
@@ -27,8 +33,8 @@ iron), plus a waitlist form for anyone who wants in.
 
 ## Stack
 
-React + Vite, with three.js for the animated backdrop, GSAP for the hero
-entrance, and Framer Motion for card and button interactions.
+React + Vite with React Router, three.js for the animated backdrop, GSAP for the
+hero entrance, and Framer Motion for card and button interactions.
 
 ```
 npm install

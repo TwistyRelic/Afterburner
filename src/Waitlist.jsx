@@ -18,7 +18,7 @@ export default function Waitlist() {
 
   return (
     <>
-      <form className="waitlist" onSubmit={handleSubmit} noValidate>
+      <form className="waitlist card" onSubmit={handleSubmit} noValidate>
         <label className="sr-only" htmlFor="email">
           Email
         </label>
@@ -33,10 +33,11 @@ export default function Waitlist() {
         />
         <motion.button
           type="submit"
-          whileHover={{ scale: 1.04 }}
-          whileTap={{ scale: 0.96 }}
+          className="primary block big"
+          whileHover={{ scale: 1.02 }}
+          whileTap={{ scale: 0.98 }}
         >
-          Join waitlist
+          Join the waitlist
         </motion.button>
       </form>
       <motion.p
