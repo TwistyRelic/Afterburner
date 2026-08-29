@@ -13,14 +13,18 @@ export default function SessionCard({ session, index }) {
       <div className="session-head">
         <span className="name">{session.name}</span>
         <span className="time">{session.time}</span>
-        <span className="number">{session.number}</span>
+        {session.number ? (
+          <span className="number">{session.number}</span>
+        ) : null}
       </div>
       <p className="note">{session.note}</p>
-      <div className="coach">
-        <span className="coach-label">Coach reply</span>
-        <p className="coach-text">{session.coach}</p>
-        <p className="markers">Suggested Healf markers: {session.markers}.</p>
-      </div>
+      {session.coach ? (
+        <div className="coach">
+          <span className="coach-label">Coach reply</span>
+          <p className="coach-text">{session.coach}</p>
+          <p className="markers">Suggested Healf markers: {session.markers}.</p>
+        </div>
+      ) : null}
     </motion.article>
   );
 }

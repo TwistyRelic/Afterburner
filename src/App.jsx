@@ -2,6 +2,7 @@ import { useEffect, useRef, useState } from "react";
 import gsap from "gsap";
 import Backdrop from "./Backdrop.jsx";
 import Gate from "./Gate.jsx";
+import LogNote from "./LogNote.jsx";
 import SessionCard from "./SessionCard.jsx";
 import Slideshow from "./Slideshow.jsx";
 import Waitlist from "./Waitlist.jsx";
@@ -10,6 +11,23 @@ import { sessions } from "./sessions.js";
 export default function App() {
   const heroRef = useRef(null);
   const [user, setUser] = useState(null);
+  const [logged, setLogged] = useState([]);
+
+  const logNote = (note) => {
+    const now = new Date();
+    setLogged((current) => [
+      {
+        id: `${now.getTime()}-${current.length}`,
+        name: user?.name ?? "You",
+        time: now.toLocaleTimeString([], {
+          hour: "2-digit",
+          minute: "2-digit",
+        }),
+        note: `"${note}"`,
+      },
+      ...current,
+    ]);
+  };
 
   useEffect(() => {
     const context = gsap.context(() => {
@@ -57,8 +75,13 @@ export default function App() {
             <Slideshow />
 
             <h2>Recent sessions</h2>
-            {sessions.map((session, index) => (
-              <SessionCard key={session.name} session={session} index={index} />
+            <LogNote onLog={logNote} />
+            {[...logged, ...sessions].map((session, index) => (
+              <SessionCard
+                key={session.id ?? session.name}
+                session={session}
+                index={index}
+              />
             ))}
 
             <h2>Waitlist</h2>
