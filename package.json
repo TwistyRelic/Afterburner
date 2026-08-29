@@ -1,0 +1,35 @@
+{
+  "name": "afterburner",
+  "version": "0.1.0",
+  "description": "A pacer that listens to you breathe",
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "preview": "vite preview",
+    "lint": "eslint ."
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "private": "true",
+  "type": "module",
+  "dependencies": {
+    "framer-motion": "^13.1.1",
+    "gsap": "^3.15.0",
+    "react": "^19.2.8",
+    "react-dom": "^19.2.8",
+    "react-router-dom": "^7.18.2"
+  },
+  "devDependencies": {
+    "@eslint/js": "^9.34.0",
+    "@vitejs/plugin-react": "^6.1.0",
+    "eslint": "^9.34.0",
+    "eslint-plugin-react": "^7.37.5",
+    "eslint-plugin-react-hooks": "^5.2.0",
+    "globals": "^17.11.0",
+    "vite": "^8.2.2"
+  },
+  "engines": {
+    "node": ">=20.19"
+  }
+}
