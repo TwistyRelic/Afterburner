@@ -22,7 +22,6 @@ export const sessions = [
       { km: 7, pace: 292, cadence: 170, effort: 5 },
       { km: 8, pace: 294, cadence: 169, effort: 5 },
     ],
-    markers: "CK, CRP",
   },
   {
     name: "Mira",
@@ -41,7 +40,6 @@ export const sessions = [
       { km: 4, pace: 183, cadence: 168, effort: 6 },
       { km: 5, pace: 186, cadence: 165, effort: 6 },
     ],
-    markers: "ferritin",
   },
   {
     name: "Tom",
@@ -63,6 +61,5 @@ export const sessions = [
       { km: 7, pace: 341, cadence: 163, effort: 3 },
       { km: 8, pace: 340, cadence: 163, effort: 3 },
     ],
-    markers: "CK, CRP, ferritin",
   },
 ];

@@ -182,12 +182,6 @@ main {
   color: var(--text);
 }
 
-.markers {
-  margin: 8px 0 0;
-  font-size: 14px;
-  color: var(--muted);
-}
-
 .sr-only {
   position: absolute;
   width: 1px;

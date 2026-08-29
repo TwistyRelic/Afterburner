@@ -23,9 +23,17 @@ stored at each kilometre mark. When a kilometre slips more than 8 s/km *and* the
 cadence falls more than 6 spm while the runner still reports it flat, that is
 form collapse rather than ordinary fatigue, and it is flagged differently.
 
-The session log holds the notes, what the phone measured, a short coach reply,
-and the markers worth testing (CK for muscle damage, CRP for inflammation,
-ferritin for iron).
+The session log holds the notes, what the phone measured, and a short coach
+reply computed from the splits. A separate markers panel explains what CK, CRP
+and ferritin indicate in endurance training as general information — it is not
+medical advice, is not personalised, and does not tell anyone to get tested.
+
+## What it does not claim
+
+Afterburner measures what you said against what you did. It does not detect
+overtraining, does not predict injury, reports no accuracy percentage, and puts
+no number on screen that was not computed from captured data. Nothing here is a
+claim to be first or only — we have measured this run, and that is the claim.
 
 ## How we build
 

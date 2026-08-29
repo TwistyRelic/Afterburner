@@ -50,7 +50,6 @@ export default function SessionCard({ session, index, speak = false }) {
               </div>
             ))}
           </dl>
-          <p className="markers">Suggested Healf markers: {session.markers}.</p>
         </div>
       ) : null}
     </motion.article>
