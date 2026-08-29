@@ -159,6 +159,29 @@ main {
   margin: 0;
 }
 
+/* The numbers the rule read, printed under the reply so it can be argued with.
+   Small evidence styling: label above value, monospaced figures, no box. */
+.coach-sources {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px 18px;
+  margin: 10px 0 0;
+}
+
+.coach-source dt {
+  font-size: 14px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--muted);
+}
+
+.coach-source dd {
+  margin: 2px 0 0;
+  font-size: 18px;
+  font-variant-numeric: tabular-nums;
+  color: var(--text);
+}
+
 .markers {
   margin: 8px 0 0;
   font-size: 14px;

@@ -1,3 +1,6 @@
+// `splits` is what the coach rules read: seconds per km from the gaps between
+// spoken markers, cadence from the accelerometer, effort as reported out loud.
+// The reply on each card is derived from these numbers, never written by hand.
 export const sessions = [
   {
     name: "Adithya",
@@ -9,7 +12,16 @@ export const sessions = [
       measured: "4:47 from km 5",
       delta: "17 s/km slower",
     },
-    coach: "Cap tomorrow at zone 2, 40 minutes.",
+    splits: [
+      { km: 1, pace: 270, cadence: 176, effort: 4 },
+      { km: 2, pace: 269, cadence: 176, effort: 4 },
+      { km: 3, pace: 271, cadence: 175, effort: 4 },
+      { km: 4, pace: 273, cadence: 175, effort: 4 },
+      { km: 5, pace: 287, cadence: 172, effort: 4 },
+      { km: 6, pace: 290, cadence: 171, effort: 4 },
+      { km: 7, pace: 292, cadence: 170, effort: 5 },
+      { km: 8, pace: 294, cadence: 169, effort: 5 },
+    ],
     markers: "CK, CRP",
   },
   {
@@ -22,7 +34,13 @@ export const sessions = [
       measured: "cadence 172 → 165 spm",
       delta: "7 spm drop on rep 5",
     },
-    coach: "Add a sixth rep next week, same rest.",
+    splits: [
+      { km: 1, pace: 180, cadence: 172, effort: 6 },
+      { km: 2, pace: 181, cadence: 171, effort: 6 },
+      { km: 3, pace: 179, cadence: 170, effort: 6 },
+      { km: 4, pace: 183, cadence: 168, effort: 6 },
+      { km: 5, pace: 186, cadence: 165, effort: 6 },
+    ],
     markers: "ferritin",
   },
   {
@@ -35,7 +53,16 @@ export const sessions = [
       measured: "cadence 178 → 164 spm after km 6",
       delta: "14 spm drop, 1 km slipped",
     },
-    coach: "Tight calf plus high weekly load — cut intensity tomorrow.",
+    splits: [
+      { km: 1, pace: 312, cadence: 178, effort: 3 },
+      { km: 2, pace: 310, cadence: 178, effort: 3 },
+      { km: 3, pace: 313, cadence: 177, effort: 3 },
+      { km: 4, pace: 314, cadence: 177, effort: 3 },
+      { km: 5, pace: 316, cadence: 176, effort: 3 },
+      { km: 6, pace: 338, cadence: 164, effort: 3 },
+      { km: 7, pace: 341, cadence: 163, effort: 3 },
+      { km: 8, pace: 340, cadence: 163, effort: 3 },
+    ],
     markers: "CK, CRP, ferritin",
   },
 ];
