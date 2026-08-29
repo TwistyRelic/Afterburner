@@ -286,14 +286,48 @@ button.ghost {
   grid-template-rows: auto minmax(0, 1fr) auto auto;
   gap: 12px;
   /* The record control is fixed bottom-centre, so the grid reserves its height
-     here rather than competing with the stage for it. */
-  padding: 12px 12px 248px;
+     here rather than competing with the stage for it. `--record-space` is the
+     control's measured height, so the reservation grows with the transcript
+     plate and typed input instead of being a guess that only fits at rest. */
+  padding: 12px 12px calc(var(--record-space, 168px) + 32px);
   background: var(--bg);
 }
 
 .screen-stage {
   position: relative;
-  min-height: 0;
+  min-height: 32dvh;
+}
+
+/* Short viewports: the plates give their padding and type back to the stage so
+   the run stays the biggest thing on screen instead of collapsing to a sliver. */
+@media (max-height: 760px) {
+  .screen {
+    gap: 8px;
+    padding: 8px 8px calc(var(--record-space, 168px) + 16px);
+  }
+
+  .plate {
+    padding: 8px 12px;
+    gap: 2px;
+  }
+
+  .plate-value,
+  .evidence,
+  .bar-moving,
+  .bar-locked {
+    font-size: 18px;
+  }
+}
+
+@media (max-height: 660px) {
+  .screen-stage {
+    min-height: 38dvh;
+  }
+
+  .record {
+    bottom: 10px;
+    gap: 6px;
+  }
 }
 
 .ribbon {

@@ -155,8 +155,10 @@ export default function Ribbon({ locked = false }) {
       // when the phone is held in portrait.
       const vfov = THREE.MathUtils.degToRad(camera.fov);
       const hfov = 2 * Math.atan(Math.tan(vfov / 2) * camera.aspect);
-      const spanX = SPAN * Math.cos(group.rotation.y) + SEGMENT_DEPTH;
-      const spanY = tallest * 1.05;
+      // A margin on both axes, because a short stage frames the run tightly
+      // enough that rounding alone clips the first and last kilometre.
+      const spanX = (SPAN * Math.cos(group.rotation.y) + SEGMENT_DEPTH) * 1.12;
+      const spanY = tallest * 1.14;
       const distance = Math.max(
         spanX / 2 / Math.tan(hfov / 2),
         spanY / 2 / Math.tan(vfov / 2),
