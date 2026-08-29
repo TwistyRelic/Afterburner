@@ -17,6 +17,12 @@ The live view shows one segment per kilometre: height is seconds per kilometre,
 colour is the effort you reported. When the blocks grow while the colour stays
 cool, you said easy and ran slow — that gap is the product.
 
+Cadence comes from the phone itself: DeviceMotion at 50 Hz, low-passed, vertical
+peaks counted over a rolling 10-second window, reported as steps per minute and
+stored at each kilometre mark. When a kilometre slips more than 8 s/km *and* the
+cadence falls more than 6 spm while the runner still reports it flat, that is
+form collapse rather than ordinary fatigue, and it is flagged differently.
+
 The session log holds the notes, what the phone measured, a short coach reply,
 and the markers worth testing (CK for muscle damage, CRP for inflammation,
 ferritin for iron).

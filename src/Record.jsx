@@ -5,7 +5,7 @@ import { useRef, useState } from "react";
 const getRecognition = () =>
   window.SpeechRecognition ?? window.webkitSpeechRecognition ?? null;
 
-export default function Record({ onLog }) {
+export default function Record({ onLog, onArm }) {
   const [listening, setListening] = useState(false);
   const [heard, setHeard] = useState("");
   const [typing, setTyping] = useState(false);
@@ -19,6 +19,7 @@ export default function Record({ onLog }) {
   };
 
   const start = () => {
+    onArm?.();
     const Recognition = getRecognition();
     if (!Recognition) {
       setTyping(true);
