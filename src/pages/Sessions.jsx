@@ -1,4 +1,5 @@
 import { Link } from "react-router-dom";
+import BuiltItself from "../BuiltItself.jsx";
 import LogNote from "../LogNote.jsx";
 import SessionCard from "../SessionCard.jsx";
 import { sessions } from "../sessions.js";
@@ -22,6 +23,8 @@ export default function Sessions({ logged, onLog }) {
           index={index}
         />
       ))}
+
+      <BuiltItself />
     </main>
   );
 }

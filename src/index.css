@@ -497,3 +497,69 @@ button.ghost {
     margin: 0 auto;
   }
 }
+
+/* The bottom strip: this repo's own commit log, each commit filed under the
+   kilometre marker spoken most recently before it. */
+.built {
+  margin: 48px 0 64px;
+  padding-top: 24px;
+  border-top: 1px solid var(--line);
+}
+
+.built-head {
+  margin: 0;
+  font-size: 26px;
+  line-height: 1.25;
+  color: var(--text);
+}
+
+.built-sub {
+  margin: 8px 0 20px;
+  font-size: 18px;
+  color: var(--body);
+}
+
+.built-error {
+  font-size: 18px;
+  color: var(--muted);
+}
+
+.built-markers,
+.built-commits {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.built-marker + .built-marker {
+  margin-top: 20px;
+}
+
+.built-km {
+  display: block;
+  font-size: 14px;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--accent);
+}
+
+.built-commits {
+  margin-top: 8px;
+  display: grid;
+  gap: 6px;
+}
+
+.built-commits a {
+  font-size: 18px;
+  color: var(--body);
+  text-decoration: none;
+}
+
+.built-commits a:hover {
+  color: var(--text);
+}
+
+.built-commits code {
+  font-variant-numeric: tabular-nums;
+  color: var(--muted);
+}

@@ -6,6 +6,9 @@
 export const run = {
   distance: "31.1 km",
   markers: 7,
+  // The kilometres the runner spoke a marker at, in order. Commits are labelled
+  // with the most recent of these before them.
+  markerKms: [4, 6, 9, 14.2, 19, 24, 29],
   dictatedAt: "km 14.2",
   focusKm: 6,
   said: "easy, no drop-off",
