@@ -25,6 +25,20 @@ iron), plus a waitlist form for anyone who wants in.
 - Only while someone is running: no new prompts if the whole team has been
   stationary for more than 15 seconds.
 
+## Stack
+
+React + Vite, with three.js for the animated backdrop, GSAP for the hero
+entrance, and Framer Motion for card and button interactions.
+
+```
+npm install
+npm run dev      # local dev server
+npm run build    # production build to dist/
+npm run lint
+```
+
+Needs Node 20.19+ (see `.nvmrc`).
+
 ## Setup
 
 - Public repo.
