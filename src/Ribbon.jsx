@@ -3,6 +3,14 @@ import gsap from "gsap";
 import * as THREE from "three";
 import KmCard from "./KmCard.jsx";
 import { detectDecoupling } from "./decoupling.js";
+import {
+  cumulativeSeconds,
+  distanceAt,
+  ghostDistanceAt,
+  ghostPace,
+  secondsBehind,
+  totalSeconds,
+} from "./ghost.js";
 import { run } from "./run.js";
 
 const SPAN = 10;
@@ -14,10 +22,20 @@ const ROLL_SECONDS = 0.55;
 const HOME_ROTATION_Y = -0.5;
 const FOCUS_ROTATION_Y = -0.16;
 const FOCUS_ZOOM = 0.62;
+// The whole run replays in this many seconds. Both runners are driven off the
+// same compressed clock, so the pace difference between them stays true.
+const REPLAY_SECONDS = 22;
+const RUNNER_RADIUS = 0.16;
+const GHOST_Z = -SEGMENT_DEPTH * 1.05;
+const GAP_TWEEN = 0.3;
 
 const flagsByKm = new Map(
   detectDecoupling(run.splits).map((flag) => [flag.km, flag]),
 );
+
+const marks = cumulativeSeconds(run.splits);
+const pace = ghostPace(run.splits);
+const total = totalSeconds(marks);
 
 // Reported effort drives colour: cool blue when the runner says it is easy,
 // accent orange as they report it getting hard.
@@ -47,9 +65,15 @@ export default function Ribbon({ locked = false }) {
   const activeRef = useRef(null);
   activeRef.current = active;
 
+  // The gap counter is written straight into the DOM by a GSAP tween, so the
+  // number counts up smoothly without re-rendering the scene every frame.
+  const gapRef = useRef(null);
+  const gapValueRef = useRef({ value: 0 });
+
   useEffect(() => {
     const mount = mountRef.current;
     if (!mount) return undefined;
+    const gap = gapValueRef.current;
 
     const scene = new THREE.Scene();
     const camera = new THREE.PerspectiveCamera(46, 1, 0.1, 200);
@@ -103,7 +127,82 @@ export default function Ribbon({ locked = false }) {
       disposables.push(geometry, material, outline.geometry, outline.material);
     });
 
-    const tallest = Math.max(...segments.map((segment) => segment.height));
+    // The ghost ribbon: the same run if the first kilometre's pace had held. It
+    // is flat by definition, translucent, and sits behind the real one so the
+    // real run's tall late kilometres read as the cost of drifting off it.
+    const ghostHeight = MIN_HEIGHT + (pace - fastest) * HEIGHT_PER_SECOND;
+    const ghostGeometry = new THREE.BoxGeometry(
+      SPAN,
+      ghostHeight,
+      SEGMENT_DEPTH,
+    );
+    const ghostMaterial = new THREE.MeshBasicMaterial({
+      color: 0x8fb8ff,
+      transparent: true,
+      opacity: 0.16,
+      depthWrite: false,
+    });
+    const ghostRibbon = new THREE.Mesh(ghostGeometry, ghostMaterial);
+    ghostRibbon.position.set(0, ghostHeight / 2, GHOST_Z);
+    group.add(ghostRibbon);
+
+    const ghostEdges = new THREE.LineSegments(
+      new THREE.EdgesGeometry(ghostGeometry),
+      new THREE.LineBasicMaterial({
+        color: 0x8fb8ff,
+        transparent: true,
+        opacity: 0.4,
+      }),
+    );
+    ghostEdges.position.copy(ghostRibbon.position);
+    group.add(ghostEdges);
+    disposables.push(
+      ghostGeometry,
+      ghostMaterial,
+      ghostEdges.geometry,
+      ghostEdges.material,
+    );
+
+    // One glowing runner on each ribbon, both moving at their true speed.
+    const runnerGeometry = new THREE.SphereGeometry(RUNNER_RADIUS, 20, 16);
+    const makeRunner = (color, opacity) => {
+      const material = new THREE.MeshBasicMaterial({
+        color,
+        transparent: opacity < 1,
+        opacity,
+      });
+      const mesh = new THREE.Mesh(runnerGeometry, material);
+      const halo = new THREE.Mesh(
+        runnerGeometry,
+        new THREE.MeshBasicMaterial({
+          color,
+          transparent: true,
+          opacity: opacity * 0.28,
+          blending: THREE.AdditiveBlending,
+          depthWrite: false,
+        }),
+      );
+      halo.scale.setScalar(2.1);
+      mesh.add(halo);
+      group.add(mesh);
+      disposables.push(material, halo.material);
+      return mesh;
+    };
+
+    const runner = makeRunner(0xffffff, 1);
+    const ghostRunner = makeRunner(0x8fb8ff, 0.85);
+    disposables.push(runnerGeometry);
+
+    const kmToX = (km) => -SPAN / 2 + (km / run.splits.length) * SPAN;
+    const topAt = (km) => {
+      const index = Math.min(Math.floor(km), segments.length - 1);
+      return segments[index].height;
+    };
+
+    const tallest = Math.max(
+      ghostHeight,
+      ...segments.map((segment) => segment.height),
+    );
     group.position.y = -tallest / 2;
 
     const still = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
@@ -138,6 +237,38 @@ export default function Ribbon({ locked = false }) {
         point.project(camera);
         const { clientWidth, clientHeight } = mount;
         anchor.style.transform = `translate3d(${((point.x + 1) / 2) * clientWidth}px, ${((1 - point.y) / 2) * clientHeight}px, 0)`;
+      }
+
+      // Both runners advance on one compressed clock, so the ghost pulling away
+      // is the real pace difference and not an animation flourish.
+      const raceSeconds = still
+        ? total
+        : ((elapsed / REPLAY_SECONDS) % 1.18) * total;
+      const km = distanceAt(raceSeconds, marks);
+      const ghostKm = Math.min(
+        ghostDistanceAt(raceSeconds, pace),
+        run.splits.length,
+      );
+      runner.position.set(kmToX(km), topAt(km) + RUNNER_RADIUS, 0);
+      ghostRunner.position.set(
+        kmToX(ghostKm),
+        ghostHeight + RUNNER_RADIUS,
+        GHOST_Z,
+      );
+
+      const behindNow = secondsBehind(raceSeconds, marks, pace);
+      if (gapRef.current && Math.abs(behindNow - gap.value) > 0.5) {
+        gsap.to(gap, {
+          value: behindNow,
+          duration: GAP_TWEEN,
+          ease: "none",
+          overwrite: true,
+          onUpdate: () => {
+            if (gapRef.current) {
+              gapRef.current.textContent = Math.round(gap.value).toString();
+            }
+          },
+        });
       }
 
       renderer.render(scene, camera);
@@ -254,7 +385,7 @@ export default function Ribbon({ locked = false }) {
       canvas.removeEventListener("pointermove", onMove);
       canvas.removeEventListener("pointerleave", onLeave);
       canvas.removeEventListener("click", onClick);
-      gsap.killTweensOf([camera.position, group.rotation]);
+      gsap.killTweensOf([camera.position, group.rotation, gap]);
       canvas.remove();
       renderer.dispose();
       disposables.forEach((item) => item.dispose());
@@ -265,6 +396,12 @@ export default function Ribbon({ locked = false }) {
 
   return (
     <div className="ribbon" ref={mountRef}>
+      <p className="plate ghost-gap">
+        <span className="plate-label">Behind the ghost of km 1</span>
+        <span className="ghost-gap-value">
+          <span ref={gapRef}>0</span> s
+        </span>
+      </p>
       <div className="km-anchor" ref={anchorRef}>
         {split ? (
           <KmCard
