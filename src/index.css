@@ -1024,3 +1024,70 @@ button.ghost {
     transition: none;
   }
 }
+
+/* Waitlist: one email field, a live count, and the addresses this browser
+   holds — there is no backend, so localStorage is the whole roster. */
+.waitlist {
+  margin: 28px 0 0;
+  padding: 20px;
+  border: 1px solid var(--line);
+  border-radius: 16px;
+  background: rgba(17, 20, 24, 0.72);
+}
+
+.waitlist-heading {
+  margin: 0;
+  font-size: 22px;
+  font-weight: 600;
+  letter-spacing: -0.01em;
+}
+
+.waitlist-count {
+  margin: 4px 0 14px;
+  font-size: 34px;
+  font-weight: 700;
+  line-height: 1.1;
+  letter-spacing: -0.02em;
+  font-variant-numeric: tabular-nums;
+}
+
+.waitlist-form {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.waitlist-form input {
+  flex: 1 1 220px;
+  min-width: 0;
+  padding: 12px 14px;
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  background: rgba(11, 13, 16, 0.8);
+  color: var(--text);
+  font: inherit;
+  font-size: 18px;
+}
+
+.waitlist-tools {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 10px;
+  margin: 12px 0 0;
+}
+
+.waitlist-status {
+  font-size: 14px;
+  color: var(--muted);
+}
+
+.waitlist-emails {
+  margin: 12px 0 0;
+  padding: 0;
+  list-style: none;
+  font-size: 14px;
+  line-height: 1.6;
+  color: var(--muted);
+  word-break: break-all;
+}
