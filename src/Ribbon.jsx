@@ -28,6 +28,11 @@ const REPLAY_SECONDS = 22;
 const RUNNER_RADIUS = 0.16;
 const GHOST_Z = -SEGMENT_DEPTH * 1.05;
 const GAP_TWEEN = 0.3;
+// Judge mode: the run fills the frame, squared up on the kilometre that came
+// apart, because the person holding the phone gets one look at it.
+const JUDGE_ZOOM = 0.44;
+const JUDGE_ROTATION_Y = -0.08;
+const JUDGE_SECONDS = 1.1;
 
 const flagsByKm = new Map(
   detectDecoupling(run.splits).map((flag) => [flag.km, flag]),
@@ -52,7 +57,7 @@ const desaturate = (color) => {
   return new THREE.Color(grey, grey, grey);
 };
 
-export default function Ribbon({ locked = false }) {
+export default function Ribbon({ locked = false, judge = false, judgeKm }) {
   const mountRef = useRef(null);
   const anchorRef = useRef(null);
   const lockedRef = useRef(locked);
@@ -69,6 +74,23 @@ export default function Ribbon({ locked = false }) {
   // number counts up smoothly without re-rendering the scene every frame.
   const gapRef = useRef(null);
   const gapValueRef = useRef({ value: 0 });
+  const frameRef = useRef(null);
+  const judgeRef = useRef(judge);
+  judgeRef.current = judge;
+
+  // Entering judge mode closes the frame on the kilometre being talked about;
+  // leaving it returns the camera to the whole run.
+  useEffect(() => {
+    if (!frameRef.current) return;
+    if (!judge) {
+      frameRef.current(null);
+      return;
+    }
+    setActive(null);
+    setPinned(false);
+    const index = run.splits.findIndex((split) => split.km === judgeKm);
+    frameRef.current(index < 0 ? Math.floor(run.splits.length / 2) : index);
+  }, [judge, judgeKm]);
 
   useEffect(() => {
     const mount = mountRef.current;
@@ -325,6 +347,29 @@ export default function Ribbon({ locked = false }) {
       });
     };
 
+    // Judge mode drives the camera from outside the scene, so the framing is
+    // published here rather than reached for through the closure.
+    frameRef.current = (kmIndex) => {
+      const target =
+        kmIndex === null
+          ? null
+          : segments[Math.min(kmIndex, segments.length - 1)];
+      gsap.to(camera.position, {
+        x: target ? target.mesh.position.x : 0,
+        z: target ? home * JUDGE_ZOOM : home,
+        duration: JUDGE_SECONDS,
+        ease: "power3.inOut",
+        overwrite: true,
+        onUpdate: () => camera.lookAt(0, 0, 0),
+      });
+      gsap.to(group.rotation, {
+        y: target ? JUDGE_ROTATION_Y : HOME_ROTATION_Y,
+        duration: JUDGE_SECONDS,
+        ease: "power3.inOut",
+        overwrite: true,
+      });
+    };
+
     const pointer = new THREE.Vector2();
     const raycaster = new THREE.Raycaster();
     const meshes = segments.map((segment) => segment.mesh);
@@ -341,7 +386,7 @@ export default function Ribbon({ locked = false }) {
     };
 
     const onMove = (event) => {
-      if (pinnedIndex !== null) return;
+      if (pinnedIndex !== null || judgeRef.current) return;
       const index = hit(event);
       if (index !== null || activeRef.current !== null) setActive(index);
     };
@@ -351,6 +396,7 @@ export default function Ribbon({ locked = false }) {
     };
 
     const onClick = (event) => {
+      if (judgeRef.current) return;
       const index = hit(event);
       if (index === null) {
         setPinned(false);
@@ -385,6 +431,7 @@ export default function Ribbon({ locked = false }) {
       canvas.removeEventListener("pointermove", onMove);
       canvas.removeEventListener("pointerleave", onLeave);
       canvas.removeEventListener("click", onClick);
+      frameRef.current = null;
       gsap.killTweensOf([camera.position, group.rotation, gap]);
       canvas.remove();
       renderer.dispose();

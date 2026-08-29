@@ -10,6 +10,7 @@ export default function Record({
   onArm,
   onHeight,
   locked = false,
+  judge = false,
   onBlocked,
 }) {
   const [listening, setListening] = useState(false);
@@ -91,29 +92,44 @@ export default function Record({
   };
 
   return (
-    <div className="record" ref={rootRef}>
+    <div className={judge ? "record record-judge" : "record"} ref={rootRef}>
       {(listening || heard) && (
         <p className="plate record-heard">
-          <span className="plate-label">{listening ? "Listening" : "Heard"}</span>
+          <span className="plate-label">
+            {listening ? "Listening" : "Heard"}
+          </span>
           <span className="plate-value">{heard || "Say the kilometre"}</span>
         </p>
       )}
 
       <button
-        className={
-          locked ? "mic mic-locked" : listening ? "mic mic-live" : "mic"
-        }
+        className={[
+          "mic",
+          judge ? "mic-judge" : "",
+          locked ? "mic-locked" : "",
+          listening ? "mic-live" : "",
+        ]
+          .filter(Boolean)
+          .join(" ")}
         type="button"
         aria-label={
-          locked ? "Blocked while stationary" : listening ? "Stop recording" : "Record"
+          locked
+            ? "Blocked while stationary"
+            : listening
+              ? "Stop recording"
+              : "Record"
         }
         aria-pressed={listening}
         onClick={listening ? stop : start}
       >
-        <span className="mic-dot" />
+        {judge ? (
+          <span className="mic-word">{listening ? "Listening" : "Talk"}</span>
+        ) : (
+          <span className="mic-dot" />
+        )}
       </button>
 
-      {typing ? (
+      {judge ? null : typing ? (
         <form className="record-typed" onSubmit={submitTyped}>
           <label className="sr-only" htmlFor="record-typed-input">
             Type the note instead

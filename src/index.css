@@ -795,3 +795,118 @@ button.ghost {
     font-size: 60px;
   }
 }
+
+/* Judge mode: the run fills the frame, every plate fades out, and one giant
+   talk button plus the verdict are the only things left to look at. */
+.judge-enter {
+  position: absolute;
+  top: 8px;
+  right: 10px;
+  padding: 6px 10px;
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  background: transparent;
+  color: var(--muted);
+  font: inherit;
+  font-size: 14px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  cursor: pointer;
+}
+
+.judge-exit {
+  position: absolute;
+  top: 12px;
+  right: 12px;
+  z-index: 4;
+  padding: 10px 14px;
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  background: rgba(11, 13, 16, 0.7);
+  color: var(--muted);
+  font: inherit;
+  font-size: 16px;
+  cursor: pointer;
+}
+
+.screen-top,
+.bar-moving,
+.bar-locked,
+.evidence,
+.ghost-gap,
+.km-anchor,
+.record-fallback,
+.record-typed {
+  transition: opacity 0.5s ease;
+}
+
+.screen-judge .screen-top,
+.screen-judge .bar-moving,
+.screen-judge .bar-locked,
+.screen-judge .evidence,
+.screen-judge .ghost-gap,
+.screen-judge .km-anchor {
+  opacity: 0;
+  pointer-events: none;
+}
+
+/* The verdict: the numbers, at 48px, directly above the talk button. */
+.verdict {
+  position: absolute;
+  left: 16px;
+  right: 16px;
+  bottom: calc(var(--record-space, 168px) + 20px);
+  z-index: 3;
+  margin: 0;
+  font-size: 48px;
+  font-weight: 700;
+  line-height: 1.05;
+  letter-spacing: -0.02em;
+  text-align: center;
+  text-wrap: balance;
+  color: var(--text);
+  text-shadow: 0 2px 24px rgba(0, 0, 0, 0.85);
+  pointer-events: none;
+}
+
+.verdict-said {
+  display: block;
+  margin-top: 8px;
+  font-size: 18px;
+  font-weight: 400;
+  letter-spacing: 0;
+  color: var(--muted);
+}
+
+/* One tap on this starts listening. Nothing else on screen is tappable. */
+.mic-judge {
+  width: min(62vw, 260px);
+  height: min(62vw, 260px);
+  border-width: 3px;
+}
+
+.mic-word {
+  font-size: 32px;
+  font-weight: 700;
+  letter-spacing: -0.01em;
+  color: var(--text);
+}
+
+.mic-judge.mic-live .mic-word {
+  color: var(--accent);
+}
+
+@media (max-height: 700px) {
+  .verdict {
+    font-size: 48px;
+  }
+
+  .mic-judge {
+    width: min(46vw, 190px);
+    height: min(46vw, 190px);
+  }
+
+  .mic-word {
+    font-size: 26px;
+  }
+}
