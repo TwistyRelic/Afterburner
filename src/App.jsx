@@ -45,6 +45,11 @@ export default function App() {
   return (
     <>
       <Backdrop />
+      <div className="strip">
+        <span>RUN/HACK London</span>
+        <span>Team Afterburner</span>
+        <span>Built on the 400-meter track</span>
+      </div>
       <main>
         <header ref={heroRef}>
           <h1 data-hero-item>Afterburner</h1>

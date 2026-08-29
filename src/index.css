@@ -31,6 +31,26 @@ body {
   pointer-events: none;
 }
 
+.strip {
+  position: relative;
+  z-index: 2;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 8px 20px;
+  padding: 10px 24px;
+  border-bottom: 1px solid var(--line);
+  background: var(--panel);
+  font-size: 13px;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--muted);
+}
+
+.strip span:first-child {
+  color: var(--accent);
+}
+
 main {
   position: relative;
   z-index: 1;
