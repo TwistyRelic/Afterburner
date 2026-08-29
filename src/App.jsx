@@ -26,7 +26,7 @@ export default function App() {
 
   return (
     <Routes>
-      <Route path="/" element={<Screen />} />
+      <Route path="/" element={<Screen onLog={logNote} />} />
       <Route
         path="/sessions"
         element={

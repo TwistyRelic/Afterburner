@@ -1,7 +1,8 @@
+import Record from "../Record.jsx";
 import Ribbon from "../Ribbon.jsx";
 import { run } from "../run.js";
 
-export default function Screen() {
+export default function Screen({ onLog }) {
   return (
     <div className="screen">
       <div className="plate screen-top">
@@ -20,9 +21,7 @@ export default function Screen() {
         /km slower, cadence −{run.cadenceDrop}.
       </p>
 
-      <button className="mic" type="button">
-        <span className="mic-inner">Speak</span>
-      </button>
+      <Record onLog={onLog} />
     </div>
   );
 }
