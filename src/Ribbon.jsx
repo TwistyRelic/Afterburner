@@ -14,6 +14,11 @@ const ROLL_SECONDS = 0.55;
 const HOME_ROTATION_Y = -0.5;
 const FOCUS_ROTATION_Y = -0.16;
 const FOCUS_ZOOM = 0.62;
+// Half the card's width, and the margin it keeps off the edge of the stage.
+const CARD_HALF = 116;
+const CARD_EDGE = 8;
+// Room the card needs above its anchor before it would ride over the top plate.
+const CARD_SPACE = 150;
 
 const flagsByKm = new Map(
   detectDecoupling(run.splits).map((flag) => [flag.km, flag]),
@@ -137,7 +142,18 @@ export default function Ribbon({ locked = false }) {
         target.localToWorld(point);
         point.project(camera);
         const { clientWidth, clientHeight } = mount;
-        anchor.style.transform = `translate3d(${((point.x + 1) / 2) * clientWidth}px, ${((1 - point.y) / 2) * clientHeight}px, 0)`;
+        // Kilometres at either end of the run project close to the edge, so the
+        // anchor is held far enough in for the whole card to stay on screen.
+        const inset = Math.min(CARD_HALF + CARD_EDGE, clientWidth / 2);
+        const x = Math.min(
+          Math.max(((point.x + 1) / 2) * clientWidth, inset),
+          clientWidth - inset,
+        );
+        const y = Math.max(
+          ((1 - point.y) / 2) * clientHeight,
+          Math.min(CARD_SPACE, clientHeight),
+        );
+        anchor.style.transform = `translate3d(${x}px, ${y}px, 0)`;
       }
 
       renderer.render(scene, camera);
@@ -155,8 +171,10 @@ export default function Ribbon({ locked = false }) {
       // when the phone is held in portrait.
       const vfov = THREE.MathUtils.degToRad(camera.fov);
       const hfov = 2 * Math.atan(Math.tan(vfov / 2) * camera.aspect);
-      const spanX = SPAN * Math.cos(group.rotation.y) + SEGMENT_DEPTH;
-      const spanY = tallest * 1.05;
+      // A margin on both axes, because a short stage frames the run tightly
+      // enough that rounding alone clips the first and last kilometre.
+      const spanX = (SPAN * Math.cos(group.rotation.y) + SEGMENT_DEPTH) * 1.12;
+      const spanY = tallest * 1.14;
       const distance = Math.max(
         spanX / 2 / Math.tan(hfov / 2),
         spanY / 2 / Math.tan(vfov / 2),

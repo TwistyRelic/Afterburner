@@ -1,16 +1,35 @@
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 
 // Voice is the primary input. The browser's own recogniser does the listening;
 // when it is missing or refuses, the small typed fallback takes over.
 const getRecognition = () =>
   window.SpeechRecognition ?? window.webkitSpeechRecognition ?? null;
 
-export default function Record({ onLog, onArm, locked = false, onBlocked }) {
+export default function Record({
+  onLog,
+  onArm,
+  onHeight,
+  locked = false,
+  onBlocked,
+}) {
   const [listening, setListening] = useState(false);
   const [heard, setHeard] = useState("");
   const [typing, setTyping] = useState(false);
   const [text, setText] = useState("");
   const recognitionRef = useRef(null);
+  const rootRef = useRef(null);
+
+  // The control is fixed, so the page cannot see how tall it grew when the
+  // transcript and the typed input appear. Report the measured height so the
+  // screen can reserve exactly that much and nothing gets covered.
+  useEffect(() => {
+    const root = rootRef.current;
+    if (!root || !onHeight) return undefined;
+    const observer = new ResizeObserver(() => onHeight(root.offsetHeight));
+    observer.observe(root);
+    onHeight(root.offsetHeight);
+    return () => observer.disconnect();
+  }, [onHeight]);
 
   const stop = () => {
     recognitionRef.current?.stop();
@@ -72,7 +91,7 @@ export default function Record({ onLog, onArm, locked = false, onBlocked }) {
   };
 
   return (
-    <div className="record">
+    <div className="record" ref={rootRef}>
       {(listening || heard) && (
         <p className="plate record-heard">
           <span className="plate-label">{listening ? "Listening" : "Heard"}</span>

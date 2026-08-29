@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useCallback, useState } from "react";
 import Record from "../Record.jsx";
 import Ribbon from "../Ribbon.jsx";
 import { detectDecoupling } from "../decoupling.js";
@@ -15,6 +15,8 @@ export default function Screen({ onLog }) {
   const { locked, watching, countdown } = useMovement();
   const [accepted, setAccepted] = useState(0);
   const [blocked, setBlocked] = useState(0);
+  const [recordSpace, setRecordSpace] = useState(168);
+  const onHeight = useCallback((height) => setRecordSpace(height), []);
 
   const log = (text) => {
     onLog(text);
@@ -22,7 +24,10 @@ export default function Screen({ onLog }) {
   };
 
   return (
-    <div className={locked ? "screen screen-locked" : "screen"}>
+    <div
+      className={locked ? "screen screen-locked" : "screen"}
+      style={{ "--record-space": `${recordSpace}px` }}
+    >
       <div className="plate screen-top">
         <span className="plate-label">Afterburner · live</span>
         <span className="plate-value">
@@ -62,26 +67,45 @@ export default function Screen({ onLog }) {
               : "plate evidence"
           }
         >
-          <strong>Km {flag.km}</strong> — said {run.said}, ran {flag.paceSlip}
-          {" s/km slower"}
-          {flag.kind === "form-collapse" ? (
-            <>
-              {" with cadence −"}
-              {flag.cadenceDrop} spm. <strong>Form collapse.</strong>
-            </>
-          ) : (
-            "."
-          )}
+          <span className="evidence-words">
+            <strong>Km {flag.km}</strong> — said {run.said}, ran {flag.paceSlip}
+            {" s/km slower"}
+            {flag.kind === "form-collapse" ? (
+              <>
+                {" with cadence −"}
+                {flag.cadenceDrop} spm. <strong>Form collapse.</strong>
+              </>
+            ) : (
+              "."
+            )}
+          </span>
+          <span className="evidence-numbers">
+            <strong>Km {flag.km}</strong> · +{flag.paceSlip} s/km
+            {flag.kind === "form-collapse" ? (
+              <>
+                {" · −"}
+                {flag.cadenceDrop} spm · <strong>collapse</strong>
+              </>
+            ) : (
+              ""
+            )}
+          </span>
         </p>
       ) : (
         <p className="plate evidence">
-          {run.distance} at an even cadence — nothing came apart.
+          <span className="evidence-words">
+            {run.distance} at an even cadence — nothing came apart.
+          </span>
+          <span className="evidence-numbers">
+            {run.distance} · even cadence
+          </span>
         </p>
       )}
 
       <Record
         onLog={log}
         onArm={request}
+        onHeight={onHeight}
         locked={locked}
         onBlocked={() => setBlocked((count) => count + 1)}
       />

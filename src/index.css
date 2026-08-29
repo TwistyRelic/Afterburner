@@ -286,14 +286,57 @@ button.ghost {
   grid-template-rows: auto minmax(0, 1fr) auto auto;
   gap: 12px;
   /* The record control is fixed bottom-centre, so the grid reserves its height
-     here rather than competing with the stage for it. */
-  padding: 12px 12px 248px;
+     here rather than competing with the stage for it. `--record-space` is the
+     control's measured height, so the reservation grows with the transcript
+     plate and typed input instead of being a guess that only fits at rest. */
+  padding: 12px 12px calc(var(--record-space, 168px) + 32px);
   background: var(--bg);
 }
 
 .screen-stage {
   position: relative;
+  /* No min-height: a floor on the item does not grow the `1fr` track, so the
+     stage would overflow it and the canvas would paint over the plates below.
+     The stage keeps its size because the plates give theirs up instead. */
   min-height: 0;
+}
+
+/* Short viewports: the plates give their padding and type back to the stage so
+   the run stays the biggest thing on screen instead of collapsing to a sliver. */
+@media (max-height: 760px) {
+  .screen {
+    gap: 8px;
+    padding: 8px 8px calc(var(--record-space, 168px) + 16px);
+  }
+
+  .plate {
+    padding: 8px 12px;
+    gap: 2px;
+  }
+
+  .plate-value,
+  .evidence,
+  .bar-moving,
+  .bar-locked {
+    font-size: 18px;
+  }
+}
+
+@media (max-height: 660px) {
+  /* The evidence reads as numbers instead of a sentence, so it holds one or two
+     lines rather than five and the run keeps the height. */
+  .evidence-words {
+    display: none;
+  }
+
+  .evidence-numbers {
+    display: inline;
+  }
+
+  .record {
+    bottom: 10px;
+    gap: 6px;
+  }
 }
 
 .ribbon {
@@ -369,6 +412,11 @@ button.ghost {
 .mic-locked {
   background: #4a4f57;
   animation: none;
+}
+
+.evidence-numbers {
+  display: none;
+  font-variant-numeric: tabular-nums;
 }
 
 .evidence {
