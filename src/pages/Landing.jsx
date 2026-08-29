@@ -43,6 +43,30 @@ export default function Landing() {
         </div>
       </header>
 
+      <h2>The gap</h2>
+      <motion.section
+        className="card pitch"
+        initial={{ opacity: 0, y: 20 }}
+        whileInView={{ opacity: 1, y: 0 }}
+        viewport={{ once: true, amount: 0.3 }}
+        transition={{ duration: 0.45, ease: "easeOut" }}
+      >
+        <p className="pitch-lead">
+          Afterburner catches you lying about your run.
+        </p>
+        <p>
+          Everyone lies about their training, and not on purpose — you genuinely
+          cannot tell. You say you held pace. You slipped a kilometer and your
+          cadence fell 14 steps.
+        </p>
+        <p>
+          So we capture both: what you said and how the legs felt, plus what you
+          actually did — pace from the gaps between the spoken kilometer
+          markers, cadence from the phone accelerometer. The product is the gap
+          between the two.
+        </p>
+      </motion.section>
+
       <h2>What it does</h2>
       <Slideshow />
 

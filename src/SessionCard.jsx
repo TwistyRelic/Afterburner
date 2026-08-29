@@ -18,6 +18,22 @@ export default function SessionCard({ session, index }) {
         ) : null}
       </div>
       <p className="note">{session.note}</p>
+      {session.gap ? (
+        <div className="gap">
+          <div className="gap-row">
+            <span className="gap-label">Said</span>
+            <span className="gap-value">{session.gap.said}</span>
+          </div>
+          <div className="gap-row">
+            <span className="gap-label">Measured</span>
+            <span className="gap-value">{session.gap.measured}</span>
+          </div>
+          <div className="gap-row">
+            <span className="gap-label">Gap</span>
+            <span className="gap-value gap-delta">{session.gap.delta}</span>
+          </div>
+        </div>
+      ) : null}
       {session.coach ? (
         <div className="coach">
           <span className="coach-label">Coach reply</span>
