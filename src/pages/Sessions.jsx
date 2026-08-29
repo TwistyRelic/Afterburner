@@ -4,6 +4,7 @@ import HonestyDial from "../HonestyDial.jsx";
 import LogNote from "../LogNote.jsx";
 import Markers from "../Markers.jsx";
 import SessionCard from "../SessionCard.jsx";
+import Waitlist from "../Waitlist.jsx";
 import { sessions } from "../sessions.js";
 
 export default function Sessions({ logged, onLog }) {
@@ -29,6 +30,8 @@ export default function Sessions({ logged, onLog }) {
           index={index}
         />
       ))}
+
+      <Waitlist />
 
       <BuiltItself />
     </main>
