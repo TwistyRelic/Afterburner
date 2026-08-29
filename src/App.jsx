@@ -1,10 +1,23 @@
 import { useState } from "react";
-import { Navigate, Route, Routes } from "react-router-dom";
+import { Navigate, Outlet, Route, Routes } from "react-router-dom";
 import Backdrop from "./Backdrop.jsx";
 import Strip from "./Strip.jsx";
 import Landing from "./pages/Landing.jsx";
 import Login from "./pages/Login.jsx";
+import Screen from "./pages/Screen.jsx";
 import Sessions from "./pages/Sessions.jsx";
+
+// The screen at /screen is a single handed-over view, so it opts out of the
+// shared backdrop and top strip.
+function Shell() {
+  return (
+    <>
+      <Backdrop />
+      <Strip />
+      <Outlet />
+    </>
+  );
+}
 
 export default function App() {
   const [user, setUser] = useState(null);
@@ -27,10 +40,9 @@ export default function App() {
   };
 
   return (
-    <>
-      <Backdrop />
-      <Strip />
-      <Routes>
+    <Routes>
+      <Route path="/screen" element={<Screen />} />
+      <Route element={<Shell />}>
         <Route path="/" element={<Landing />} />
         <Route path="/login" element={<Login onEnter={setUser} />} />
         <Route
@@ -45,7 +57,7 @@ export default function App() {
           }
         />
         <Route path="*" element={<Navigate to="/" replace />} />
-      </Routes>
-    </>
+      </Route>
+    </Routes>
   );
 }
