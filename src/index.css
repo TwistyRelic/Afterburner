@@ -182,38 +182,6 @@ h2 {
   white-space: nowrap;
 }
 
-.waitlist {
-  display: flex;
-  flex-direction: column;
-  gap: 12px;
-  margin: 16px 0 0;
-}
-
-.waitlist input {
-  padding: 14px 16px;
-  border: 1px solid var(--line);
-  border-radius: 10px;
-  background: var(--panel);
-  color: var(--text);
-  font: inherit;
-}
-
-.waitlist input::placeholder {
-  color: var(--muted);
-}
-
-.waitlist input:focus {
-  outline: 2px solid var(--accent);
-  outline-offset: 1px;
-}
-
-.waitlist-status {
-  margin: 12px 0 0;
-  min-height: 1.55em;
-  color: var(--muted);
-  font-size: 14px;
-}
-
 .gate-form {
   margin-top: 24px;
   display: flex;

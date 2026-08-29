@@ -3,9 +3,9 @@ import { Link } from "react-router-dom";
 import gsap from "gsap";
 import { motion } from "framer-motion";
 import Slideshow from "../Slideshow.jsx";
-import Waitlist from "../Waitlist.jsx";
+import SessionFeed from "../SessionFeed.jsx";
 
-export default function Landing() {
+export default function Landing({ logged, onLog }) {
   const heroRef = useRef(null);
 
   useEffect(() => {
@@ -38,7 +38,7 @@ export default function Landing() {
             </Link>
           </motion.div>
           <Link className="button ghost" to="/sessions">
-            Continue as visitor
+            Open sessions
           </Link>
         </div>
       </header>
@@ -46,8 +46,8 @@ export default function Landing() {
       <h2>What it does</h2>
       <Slideshow />
 
-      <h2>Waitlist</h2>
-      <Waitlist />
+      <h2>Sessions</h2>
+      <SessionFeed logged={logged} onLog={onLog} />
 
       <footer>
         Built at RUN/HACK London — voice on the track, Devin on the repo.

@@ -1,8 +1,5 @@
 import { Link } from "react-router-dom";
-import LogNote from "../LogNote.jsx";
-import SessionCard from "../SessionCard.jsx";
-import Waitlist from "../Waitlist.jsx";
-import { sessions } from "../sessions.js";
+import SessionFeed from "../SessionFeed.jsx";
 
 export default function Sessions({ user, logged, onLog, onSignOut }) {
   const identity = user ?? { kind: "visitor", name: "Visitor" };
@@ -27,18 +24,7 @@ export default function Sessions({ user, logged, onLog, onSignOut }) {
       </div>
 
       <h1 className="page-title">Sessions</h1>
-      <LogNote onLog={onLog} />
-
-      {[...logged, ...sessions].map((session, index) => (
-        <SessionCard
-          key={session.id ?? session.name}
-          session={session}
-          index={index}
-        />
-      ))}
-
-      <h2>Waitlist</h2>
-      <Waitlist />
+      <SessionFeed logged={logged} onLog={onLog} />
 
       <footer>
         Built at RUN/HACK London — voice on the track, Devin on the repo.

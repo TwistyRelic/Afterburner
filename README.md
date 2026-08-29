@@ -6,7 +6,7 @@ Built at RUN/HACK London — voice on the track, Devin on the repo.
 
 ## Pages
 
-- `/` — landing: title, what it does, waitlist
+- `/` — landing: title, what it does, live session feed
 - `/login` — log in or continue as visitor (client-side only, no backend)
 - `/sessions` — log a note and read the session cards
 
@@ -17,12 +17,11 @@ Session notes, coach replies, markers:
 - session notes spoken while running
 - a short coach reply
 - suggested Healf markers: CK, CRP, ferritin
-- waitlist
 
 You talk through the session as it happens — pace, effort, how the legs feel. By
 the time you stop moving, the page holds the notes, a short coach reply, and the
 markers worth testing (CK for muscle damage, CRP for inflammation, ferritin for
-iron), plus a waitlist form for anyone who wants in.
+iron).
 
 ## How we build
 
