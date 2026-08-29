@@ -80,6 +80,53 @@
         margin: 10px 0 0;
         color: var(--muted);
       }
+      .sr-only {
+        position: absolute;
+        width: 1px;
+        height: 1px;
+        overflow: hidden;
+        clip: rect(0 0 0 0);
+        white-space: nowrap;
+      }
+      .waitlist {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 10px;
+        margin: 16px 0 0;
+      }
+      .waitlist input {
+        flex: 1 1 220px;
+        min-width: 0;
+        padding: 12px 14px;
+        border: 1px solid var(--line);
+        border-radius: 10px;
+        background: var(--panel);
+        color: var(--text);
+        font: inherit;
+      }
+      .waitlist input::placeholder {
+        color: var(--muted);
+      }
+      .waitlist input:focus {
+        outline: 2px solid var(--accent);
+        outline-offset: 1px;
+      }
+      .waitlist button {
+        padding: 12px 20px;
+        border: 0;
+        border-radius: 10px;
+        background: var(--accent);
+        color: #14181d;
+        font: inherit;
+        font-weight: 600;
+        cursor: pointer;
+      }
+      .waitlist-status {
+        margin: 12px 0 0;
+        min-height: 1.55em;
+        color: var(--muted);
+        font-size: 14px;
+      }
       footer {
         margin-top: 64px;
         color: var(--muted);
@@ -131,7 +178,39 @@
         </p>
       </article>
 
+      <h2>Waitlist</h2>
+
+      <form class="waitlist" id="waitlist-form" novalidate>
+        <label class="sr-only" for="email">Email</label>
+        <input
+          id="email"
+          name="email"
+          type="email"
+          placeholder="you@example.com"
+          autocomplete="email"
+          required
+        />
+        <button type="submit">Join waitlist</button>
+      </form>
+      <p class="waitlist-status" id="waitlist-status" role="status"></p>
+
       <footer>Built at RUN/HACK London — voice on the track, Devin on the repo.</footer>
     </main>
+    <script>
+      const form = document.getElementById("waitlist-form");
+      const input = document.getElementById("email");
+      const status = document.getElementById("waitlist-status");
+
+      form.addEventListener("submit", (event) => {
+        event.preventDefault();
+        const email = input.value.trim();
+        if (!input.checkValidity() || !email) {
+          status.textContent = "Enter a valid email address.";
+          return;
+        }
+        status.textContent = `Thanks — ${email} is on the list.`;
+        input.value = "";
+      });
+    </script>
   </body>
 </html>
