@@ -1,7 +1,8 @@
 import { motion } from "framer-motion";
+import CoachVoice from "./CoachVoice.jsx";
 import { coachReply } from "./coach.js";
 
-export default function SessionCard({ session, index }) {
+export default function SessionCard({ session, index, speak = false }) {
   const reply = coachReply(session);
 
   return (
@@ -40,7 +41,7 @@ export default function SessionCard({ session, index }) {
       {reply ? (
         <div className="coach">
           <span className="coach-label">Coach reply</span>
-          <p className="coach-text">{reply.text}</p>
+          <CoachVoice text={reply.text} speak={speak} />
           <dl className="coach-sources">
             {reply.sources.map((source) => (
               <div className="coach-source" key={source.label}>

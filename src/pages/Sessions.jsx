@@ -28,6 +28,7 @@ export default function Sessions({ logged, onLog }) {
           key={session.id ?? session.name}
           session={session}
           index={index}
+          speak={index === 0 && Boolean(session.id)}
         />
       ))}
 
