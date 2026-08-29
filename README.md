@@ -65,3 +65,18 @@ Needs Node 20.19+ (see `.nvmrc`).
 ## Rule
 
 No new Devin prompts if the whole team has been stationary for more than 15 seconds.
+
+## If it breaks
+
+Every capability degrades to a smaller, true claim rather than to a blank
+screen.
+
+| What fails | What still happens |
+| --- | --- |
+| WebGL will not start | The run draws as bars from the same splits; judge mode and the verdict are unaffected |
+| No speech recognition | The typed fallback opens by itself, in judge mode too |
+| No DeviceMotion cadence | The detector reads pace alone and reports the slip without claiming form collapse |
+
+Under time pressure, revert to the last green commit rather than fixing
+forward: `main` stays shippable, so a red build is one revert away from a
+working demo.
