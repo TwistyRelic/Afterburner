@@ -23,7 +23,7 @@ export default function BuiltItself() {
   return (
     <section className="built">
       <h2 className="built-head">
-        This page built itself — every commit dictated while running{" "}
+        This page built itself. Every commit was dictated while running{" "}
         {run.distance}
       </h2>
       <p className="built-sub">

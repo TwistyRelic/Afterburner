@@ -42,17 +42,17 @@ export default function Screen({ onLog }) {
 
       {locked ? (
         <p className="plate bar-locked" role="status">
-          <strong>Build locked</strong> — stationary for 15 s. Move to unlock.
+          <strong>Build locked.</strong> Stationary for 15 s, so move to unlock.
           <span className="bar-counts">
             {accepted} accepted · {blocked} blocked
           </span>
         </p>
       ) : (
         <p className="plate bar-moving" role="status">
-          <strong>Moving</strong>
+          <strong>Moving.</strong>
           {watching
-            ? ` — locks after ${countdown} s still.`
-            : " — no position fix, gate off."}
+            ? ` Locks after ${countdown} s still.`
+            : " No position fix, so the gate is off."}
           <span className="bar-counts">
             {accepted} accepted · {blocked} blocked
           </span>
@@ -67,11 +67,11 @@ export default function Screen({ onLog }) {
               : "plate evidence"
           }
         >
-          <strong>Km {flag.km}</strong> — said {run.said}, ran {flag.paceSlip}
+          <strong>Km {flag.km}:</strong> said {run.said}, ran {flag.paceSlip}
           {" s/km slower"}
           {flag.kind === "form-collapse" ? (
             <>
-              {" with cadence −"}
+              {" with cadence down "}
               {flag.cadenceDrop} spm. <strong>Form collapse.</strong>
             </>
           ) : (
@@ -80,7 +80,7 @@ export default function Screen({ onLog }) {
         </p>
       ) : (
         <p className="plate evidence">
-          {run.distance} at an even cadence — nothing came apart.
+          {run.distance} at an even cadence, and nothing came apart.
         </p>
       )}
 

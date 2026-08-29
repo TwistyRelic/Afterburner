@@ -72,8 +72,8 @@ export default function KmCard({ split, flag, pinned }) {
               : "km-card-flag"
           }
         >
-          {flag.kind === "form-collapse" ? "Form collapse" : "Slowing"} — +
-          {flag.paceSlip} s/km, cadence −{flag.cadenceDrop} spm
+          {flag.kind === "form-collapse" ? "Form collapse. " : "Slowing. "}
+          {flag.paceSlip} s/km slower, cadence down {flag.cadenceDrop} spm
         </p>
       ) : (
         <p className="km-card-flag km-card-flag-clear">No flag</p>
