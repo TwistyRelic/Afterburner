@@ -924,3 +924,103 @@ button.ghost {
     font-size: 26px;
   }
 }
+
+/* Markers panel: three cards that flip to a general-education line, with the
+   disclaimer sitting above them so it is read before any of the content. */
+.markers-panel {
+  margin: 20px 0 0;
+}
+
+.markers-heading {
+  margin: 0;
+  font-size: 22px;
+  font-weight: 600;
+  letter-spacing: -0.01em;
+}
+
+.markers-disclaimer {
+  margin: 6px 0 14px;
+  font-size: 14px;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: var(--muted);
+}
+
+.marker-cards {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 12px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.marker-card {
+  perspective: 1000px;
+}
+
+.marker-flip {
+  position: relative;
+  display: block;
+  width: 100%;
+  height: 172px;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  font: inherit;
+  text-align: left;
+  cursor: pointer;
+  transform-style: preserve-3d;
+  transition: transform 0.55s cubic-bezier(0.2, 0.7, 0.2, 1);
+}
+
+.marker-flip:hover,
+.marker-flip:focus-visible,
+.marker-flip-shown {
+  transform: rotateY(180deg);
+}
+
+.marker-face {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 6px;
+  padding: 16px;
+  border: 1px solid var(--line);
+  border-radius: 14px;
+  background: rgba(17, 20, 24, 0.72);
+  backface-visibility: hidden;
+}
+
+.marker-back {
+  transform: rotateY(180deg);
+  border-color: rgba(58, 160, 255, 0.35);
+}
+
+.marker-name {
+  font-size: 34px;
+  font-weight: 700;
+  line-height: 1;
+  letter-spacing: -0.02em;
+}
+
+.marker-full {
+  font-size: 14px;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--muted);
+}
+
+.marker-indicates {
+  font-size: 18px;
+  line-height: 1.35;
+  color: var(--text);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .marker-flip {
+    transition: none;
+  }
+}

@@ -2,6 +2,7 @@ import { Link } from "react-router-dom";
 import BuiltItself from "../BuiltItself.jsx";
 import HonestyDial from "../HonestyDial.jsx";
 import LogNote from "../LogNote.jsx";
+import Markers from "../Markers.jsx";
 import SessionCard from "../SessionCard.jsx";
 import { sessions } from "../sessions.js";
 
@@ -14,6 +15,8 @@ export default function Sessions({ logged, onLog }) {
           Back to live
         </Link>
       </div>
+
+      <Markers />
 
       <HonestyDial />
 
