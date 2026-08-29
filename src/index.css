@@ -295,7 +295,10 @@ button.ghost {
 
 .screen-stage {
   position: relative;
-  min-height: 32dvh;
+  /* No min-height: a floor on the item does not grow the `1fr` track, so the
+     stage would overflow it and the canvas would paint over the plates below.
+     The stage keeps its size because the plates give theirs up instead. */
+  min-height: 0;
 }
 
 /* Short viewports: the plates give their padding and type back to the stage so
@@ -320,8 +323,14 @@ button.ghost {
 }
 
 @media (max-height: 660px) {
-  .screen-stage {
-    min-height: 38dvh;
+  /* The evidence reads as numbers instead of a sentence, so it holds one or two
+     lines rather than five and the run keeps the height. */
+  .evidence-words {
+    display: none;
+  }
+
+  .evidence-numbers {
+    display: inline;
   }
 
   .record {
@@ -403,6 +412,11 @@ button.ghost {
 .mic-locked {
   background: #4a4f57;
   animation: none;
+}
+
+.evidence-numbers {
+  display: none;
+  font-variant-numeric: tabular-nums;
 }
 
 .evidence {
