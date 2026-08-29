@@ -696,3 +696,28 @@ button.ghost {
   position: relative;
   z-index: 1;
 }
+
+/* The gap the runner cannot feel, counted up live against the ghost of their
+   own first kilometre. Sits on a plate over the stage, never bare on canvas. */
+.ghost-gap {
+  position: absolute;
+  top: 10px;
+  left: 10px;
+  z-index: 2;
+  pointer-events: none;
+  border-color: rgba(143, 184, 255, 0.35);
+}
+
+.ghost-gap-value {
+  font-size: 28px;
+  font-weight: 600;
+  font-variant-numeric: tabular-nums;
+  line-height: 1.1;
+  color: #8fb8ff;
+}
+
+@media (max-height: 660px) {
+  .ghost-gap-value {
+    font-size: 22px;
+  }
+}
