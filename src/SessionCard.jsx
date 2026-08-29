@@ -1,9 +1,11 @@
 import { motion } from "framer-motion";
 import CoachVoice from "./CoachVoice.jsx";
 import { coachReply } from "./coach.js";
+import { measured } from "./measured.js";
 
 export default function SessionCard({ session, index, speak = false }) {
   const reply = coachReply(session);
+  const numbers = measured(session.splits);
 
   return (
     <motion.article
@@ -17,11 +19,14 @@ export default function SessionCard({ session, index, speak = false }) {
       <div className="session-head">
         <span className="name">{session.name}</span>
         <span className="time">{session.time}</span>
-        {session.number ? (
-          <span className="number">{session.number}</span>
-        ) : null}
+        {numbers ? <span className="number">{numbers.average} avg</span> : null}
       </div>
       <p className="note">{session.note}</p>
+      {numbers ? (
+        <p className="measured">
+          {numbers.splits} km captured · cadence {numbers.cadence}
+        </p>
+      ) : null}
       {session.gap ? (
         <div className="gap">
           <div className="gap-row">
@@ -50,7 +55,6 @@ export default function SessionCard({ session, index, speak = false }) {
               </div>
             ))}
           </dl>
-          <p className="markers">Suggested Healf markers: {session.markers}.</p>
         </div>
       ) : null}
     </motion.article>

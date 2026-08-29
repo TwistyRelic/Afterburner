@@ -23,7 +23,6 @@ export default function App() {
         // The note was spoken during this run, so the coach reply on it is
         // computed from this run's splits rather than from nothing.
         splits: run.splits,
-        markers: "CK, CRP",
       },
       ...current,
     ]);

@@ -182,12 +182,6 @@ main {
   color: var(--text);
 }
 
-.markers {
-  margin: 8px 0 0;
-  font-size: 14px;
-  color: var(--muted);
-}
-
 .sr-only {
   position: absolute;
   width: 1px;
@@ -1105,4 +1099,13 @@ button.ghost {
   letter-spacing: 0.06em;
   text-transform: uppercase;
   color: var(--muted);
+}
+
+/* Derived from the splits, not written by hand. */
+.measured {
+  margin: 6px 0 0;
+  font-size: 14px;
+  letter-spacing: 0.04em;
+  color: var(--muted);
+  font-variant-numeric: tabular-nums;
 }
